@@ -1,0 +1,2305 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>حاسبة نقاط لعبة الهند الاحترافية</title>
+    <!-- PWA & Mobile Web App Capabilities -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="حاسبة الهند">
+    <!-- Tailwind CSS & FontAwesome -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Tajawal', sans-serif;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+        /* ---------- Warm daylight palette ---------- */
+        :root {
+            --bg-1: #fdfaf3;
+            --bg-2: #f7f1e6;
+            --bg-3: #edf2ea;
+            --glow-a: rgba(252, 206, 137, 0.55);
+            --glow-b: rgba(160, 214, 197, 0.32);
+            --card: #ffffff;
+            --card-soft: #f8f3e8;
+            --card-line: #e5ddcb;
+            --line: #e5ddcb;
+            --line-soft: #eee8da;
+            --ink: #1d2a36;
+            --ink-2: #2e3c48;
+            --ink-3: #465360;
+            --ink-4: #5e6b78;
+            --ink-5: #8b96a2;
+            --amber: #a25f0b;
+            --green: #0b7a5c;
+            --red: #bd2f47;
+            --blue: #2b6d8d;
+            --indigo: #4a45d6;
+            --header-bg: rgba(255, 253, 248, 0.94);
+            --shadow-sm: 0 6px 16px rgba(88, 76, 52, 0.09);
+            --shadow-md: 0 14px 34px rgba(88, 76, 52, 0.16);
+            --overlay: rgba(28, 35, 42, 0.42);
+        }
+
+        .bg-slate-950 {
+            background:
+                radial-gradient(900px 520px at 82% -8%, var(--glow-a) 0%, rgba(255, 255, 255, 0) 60%),
+                radial-gradient(760px 500px at 2% 0%, var(--glow-b) 0%, rgba(255, 255, 255, 0) 62%),
+                linear-gradient(180deg, var(--bg-1) 0%, var(--bg-2) 58%, var(--bg-3) 100%) !important;
+            color: var(--ink);
+        }
+        header.sticky {
+            background: var(--header-bg) !important;
+            border-bottom-color: var(--line) !important;
+            box-shadow: 0 2px 14px rgba(88, 76, 52, 0.08) !important;
+            backdrop-filter: blur(12px);
+        }
+        .glass-panel {
+            background: var(--card) !important;
+            border-color: var(--card-line) !important;
+            box-shadow: var(--shadow-sm) !important;
+        }
+        .glass-panel[class*="border-slate-"] { border-color: var(--card-line) !important; }
+
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+            height: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(120, 110, 90, 0.25);
+            border-radius: 4px;
+        }
+
+        /* Thicker, easier-to-read lines and softer secondary text everywhere, without
+           having to touch every individual Tailwind class. */
+        .border { border-width: 2px !important; }
+        .border-t { border-top-width: 2px !important; }
+        .border-b { border-bottom-width: 2px !important; }
+
+        /* ---------- Surfaces ---------- */
+        .bg-slate-900 { background-color: var(--card-soft) !important; }
+        .bg-slate-900\/50, .bg-slate-900\/60, .bg-slate-900\/90 { background-color: var(--card-soft) !important; }
+        .hover\:bg-slate-900\/50:hover { background-color: var(--card-soft) !important; }
+        .bg-slate-950\/60 { background-color: var(--card-soft) !important; }
+        .bg-slate-950\/80, .bg-slate-950\/85, .bg-slate-950\/90 { background-color: var(--overlay) !important; }
+        .bg-slate-800 { background-color: var(--line-soft) !important; }
+        .bg-slate-700 { background-color: var(--line) !important; }
+        .hover\:bg-slate-700:hover { background-color: var(--line) !important; }
+        .bg-rose-950\/30 { background-color: #fdeff1 !important; }
+
+        /* ---------- Lines ---------- */
+        .border-slate-700, .border-slate-800 { border-color: var(--line) !important; }
+        .border-slate-800\/80, .border-slate-800\/50 { border-color: var(--line-soft) !important; }
+        .divide-y > :not([hidden]) ~ :not([hidden]) {
+            border-top-width: 2px !important;
+            border-top-color: var(--line-soft) !important;
+        }
+
+        /* ---------- Ink ---------- */
+        .text-slate-100 { color: var(--ink) !important; }
+        .text-slate-200 { color: var(--ink-2) !important; }
+        .text-slate-300 { color: var(--ink-3) !important; }
+        .text-slate-400 { color: var(--ink-4) !important; }
+        .text-slate-500, .text-slate-600 { color: var(--ink-5) !important; }
+        .text-amber-300, .text-amber-400 { color: var(--amber) !important; }
+        .text-emerald-300, .text-emerald-400 { color: var(--green) !important; }
+        .text-rose-300, .text-rose-400 { color: var(--red) !important; }
+        .text-rose-200 { color: #9f1239 !important; }
+        .text-sky-300, .text-sky-400 { color: var(--blue) !important; }
+        .text-indigo-300 { color: var(--indigo) !important; }
+        .bg-gradient-to-r.text-white .text-amber-300 { color: #fde68a !important; }
+        ::placeholder { color: var(--ink-5) !important; opacity: 1; }
+        /* Slightly larger text everywhere, including the fixed-pixel sizes Tailwind's
+           arbitrary-value classes don't scale with the root font-size. */
+        .text-\[9px\] { font-size: 11px !important; }
+        .text-\[10px\] { font-size: 12px !important; }
+        .text-\[11px\] { font-size: 13px !important; }
+        .text-xs { font-size: 0.9rem !important; }
+        .text-sm { font-size: 1rem !important; }
+        .text-base { font-size: 1.1rem !important; }
+        .text-lg { font-size: 1.3rem !important; }
+        .text-xl { font-size: 1.55rem !important; }
+        .text-2xl { font-size: 1.85rem !important; }
+        .text-3xl { font-size: 2.1rem !important; }
+
+        /* Card pad: digit size follows the card size, so the same face reads clearly
+           on a phone and on a tablet instead of staying pinned at a phone size. */
+        .card-rank { font-size: clamp(30px, 7vw, 46px) !important; line-height: 1; }
+        .card-suit { font-size: clamp(20px, 4.4vw, 30px) !important; line-height: 1; }
+        .card-val { font-size: clamp(11px, 2vw, 15px) !important; line-height: 1; }
+
+        /* Rounds table: full names and no sideways scrolling on phones/iPads. */
+        .rounds-table { width: 100%; table-layout: fixed; }
+        .rounds-table th {
+            font-size: 12px !important;
+            line-height: 1.3;
+            padding: 8px 4px;
+            white-space: normal;
+            word-break: break-word;
+        }
+        .rounds-table td { font-size: 14px; padding: 8px 4px; word-break: break-word; }
+        .rounds-table .col-index { width: 30px; }
+        .rounds-table .col-time { width: 56px; white-space: nowrap; }
+        .rounds-table .col-del { width: 38px; white-space: nowrap; }
+
+        @media (max-width: 480px) {
+            .rounds-table th { font-size: 10.5px !important; padding: 6px 1px; }
+            .rounds-table td { font-size: 12.5px !important; padding: 6px 1px; }
+            .rounds-table .col-index { width: 22px; }
+            .rounds-table .col-time { width: 44px; }
+            .rounds-table .col-del { width: 34px; }
+        }
+
+        /* Statistics modal: one soft card per block + a labeled divider between groups. */
+        .stat-card {
+            border-radius: 18px;
+            padding: 12px;
+            background: var(--card-soft) !important;
+            border: 1px solid var(--card-line) !important;
+        }
+        .stat-divider { display: flex; align-items: center; gap: 8px; padding-top: 2px; }
+        .stat-divider .line { flex: 1; height: 1px; background: linear-gradient(90deg, transparent, rgba(140, 128, 105, 0.4), transparent); }
+        .stat-divider .label { font-size: 11px; font-weight: 800; color: var(--ink-4); }
+        .hand-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 2px;
+            font-size: 10px;
+            font-weight: 800;
+            padding: 1px 6px;
+            border-radius: 999px;
+            border: 1px solid transparent;
+        }
+        .hand-tayara { background: #e8f6fd !important; border-color: #bae6fd !important; color: #0369a1 !important; }
+        .hand-normal { background: #e9faf2 !important; border-color: #a7f3d0 !important; color: #047857 !important; }
+        .hand-400 { background: #fff8e5 !important; border-color: #fde68a !important; color: #a25f0b !important; }
+        .hand-800 { background: #fff2e6 !important; border-color: #fed7aa !important; color: #b45309 !important; }
+        .hand-1200 { background: #fdeef1 !important; border-color: #fecdd3 !important; color: #be123c !important; }
+        .hand-harq { background: #f4efff !important; border-color: #ddd6fe !important; color: #6d28d9 !important; }
+
+        /* Ending-type buttons keep the hand name and its penalty on one line on phones. */
+        .ending-type-btn { white-space: nowrap; }
+
+        /* Player score cards, tinted by standing instead of a flat dark block. */
+        .player-card {
+            padding: 12px;
+            border-radius: 18px;
+            border: 2px solid var(--card-line);
+            background: var(--card);
+            box-shadow: var(--shadow-sm);
+        }
+        .player-card.rank-first { background: linear-gradient(165deg, #ffffff 0%, #eafaf2 100%); border-color: #34d399; }
+        .player-card.rank-second { border-color: #cbd5e1; }
+        .player-card.rank-third { background: linear-gradient(165deg, #ffffff 0%, #fdf6e6 100%); border-color: #fbbf24; }
+        .player-card.rank-last { background: linear-gradient(165deg, #ffffff 0%, #fdedf0 100%); border-color: #fb7185; }
+
+        @media (max-width: 430px) {
+            header.sticky { padding: 8px 10px; }
+            main { padding-left: 12px; padding-right: 12px; }
+            .text-xs { font-size: 0.82rem !important; }
+            .text-sm { font-size: 0.92rem !important; }
+            .text-base { font-size: 1rem !important; }
+            .text-xl { font-size: 1.4rem !important; }
+            .ending-type-btn { font-size: 11.5px !important; line-height: 1.5; padding: 8px 4px !important; }
+        }
+
+        /* Small phones: drop the players label so the brand title never gets squeezed. */
+        @media (max-width: 380px) {
+            #btn-players-label { display: none; }
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col justify-between overflow-x-hidden">
+
+    <!-- Navbar / Header -->
+    <header class="sticky top-0 z-40 bg-slate-900 border-b border-slate-800 px-4 py-3 shadow-md">
+        <div class="max-w-md sm:max-w-xl md:max-w-2xl lg:max-w-3xl mx-auto flex items-center justify-between">
+            <div class="flex items-center space-x-2 space-x-reverse min-w-0">
+                <div class="w-9 h-9 shrink-0 rounded-xl bg-gradient-to-tr from-amber-500 to-amber-300 text-slate-950 font-black flex items-center justify-center text-lg shadow-md shadow-amber-500/20">
+                    🃏
+                </div>
+                <div class="min-w-0">
+                    <h1 class="font-extrabold text-base leading-tight text-slate-100 whitespace-nowrap">حاسبة الهند</h1>
+                    <div class="flex items-center gap-1 min-w-0">
+                        <p class="text-[10px] text-amber-400 font-medium truncate max-w-[92px]" id="logged-email-display">زائر محلي</p>
+                        <button onclick="openEmailChange()" type="button" id="btn-change-email" title="تغيير البريد" class="hidden shrink-0 text-amber-400/80 hover:text-amber-200">
+                            <i class="fa-solid fa-pen text-[9px]"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex items-center space-x-1.5 space-x-reverse shrink-0">
+                <button onclick="copyPageLink()" id="btn-share-link" type="button" title="نسخ رابط الصفحة" class="bg-slate-800 hover:bg-slate-700 text-sky-300 p-2 rounded-xl border border-slate-700 transition active:scale-95">
+                    <i class="fa-solid fa-share-nodes text-xs"></i>
+                </button>
+                <button onclick="openPlayerSetupModal()" type="button" title="تعيين أسماء اللاعبين" class="bg-slate-800 hover:bg-slate-700 text-amber-400 px-2.5 py-1.5 rounded-xl text-xs font-bold border border-slate-700 flex items-center gap-1 whitespace-nowrap transition">
+                    <i class="fa-solid fa-users-gear text-xs"></i>
+                    <span id="btn-players-label">اللاعبين</span>
+                </button>
+                <button onclick="openStatsModal()" type="button" class="bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-white px-3 py-1.5 rounded-xl text-xs font-black border border-indigo-500 flex items-center gap-1.5 whitespace-nowrap shadow-md shadow-indigo-600/30 transition active:scale-95">
+                    <i class="fa-solid fa-trophy text-amber-300 text-xs"></i>
+                    <span class="hidden sm:inline">السجل والإحصائيات</span>
+                    <span class="sm:hidden">السجل</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-md sm:max-w-xl md:max-w-2xl lg:max-w-3xl mx-auto w-full px-4 py-4 space-y-4 flex-1">
+
+        <!-- Login / Email Sync Card (If Not Logged In) -->
+        <div id="auth-screen" class="glass-panel p-4 rounded-2xl border border-indigo-500/30 bg-indigo-950/20 space-y-3">
+            <div class="flex items-center justify-between">
+                <h2 class="font-bold text-sm text-indigo-300 flex items-center gap-1.5">
+                    <i class="fa-solid fa-cloud-arrow-up"></i>
+                    ربط بالبريد لحفظ السجلات
+                </h2>
+                <span class="text-[10px] bg-indigo-500/20 text-indigo-300 px-2 py-0.5 rounded-full font-bold">اختياري</span>
+            </div>
+            <p class="text-xs text-slate-300 leading-relaxed">
+                أدخل بريدك ورقمك السري (4 أرقام). الرقم يرتبط بالبريد أول مرة، وما أحد يفتح حسابك بدونه. الجهاز يتذكرك بعد أول دخول، والرقم يُطلب مرة ثانية فقط عند مسح الإحصائيات:
+            </p>
+            <div class="space-y-2">
+                <input type="email" id="email-input" placeholder="example@gmail.com" onkeydown="if(event.key==='Enter')handleEmailLogin()" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-100 focus:outline-none focus:border-indigo-500">
+                <div class="flex gap-2">
+                    <input type="password" id="pin-input" inputmode="numeric" maxlength="4" autocomplete="off" placeholder="الرقم السري (4 أرقام)" oninput="this.value=this.value.replace(/\D/g,'').slice(0,4)" onkeydown="if(event.key==='Enter')handleEmailLogin()" class="flex-1 bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-100 text-center tracking-[0.4em] focus:outline-none focus:border-indigo-500">
+                    <button onclick="handleEmailLogin()" type="button" class="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-xl text-xs font-bold transition">
+                        حفظ
+                    </button>
+                </div>
+            </div>
+            <div class="flex items-center justify-between gap-2">
+                <p class="text-[10px] text-slate-500" id="sync-status-label"></p>
+                <button onclick="closeEmailCard()" id="btn-cancel-email" type="button" class="hidden shrink-0 text-[10px] text-slate-400 hover:text-slate-200 font-bold">إلغاء</button>
+            </div>
+        </div>
+
+        <!-- Dashboard Scoreboard Header -->
+        <div class="glass-panel p-3.5 rounded-2xl flex items-center justify-between border border-slate-800">
+            <div>
+                <span class="text-xs text-slate-400 block font-medium">رقم الجولة</span>
+                <span class="text-xl font-black text-amber-400" id="round-counter-display">0 / 9</span>
+            </div>
+
+            <div class="flex gap-2">
+                <button onclick="confirmResetGame()" type="button" class="bg-rose-500/20 text-rose-300 hover:bg-rose-500/30 border border-rose-500/30 px-3 py-2 rounded-xl text-xs font-bold transition active:scale-95 flex items-center gap-1">
+                    <i class="fa-solid fa-rotate-left"></i>
+                    <span>قيم جديد</span>
+                </button>
+                <button onclick="startNewRoundFlow()" type="button" class="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-black px-4 py-2 rounded-xl text-xs shadow-lg shadow-amber-500/20 transition active:scale-95 flex items-center gap-1">
+                    <i class="fa-solid fa-plus"></i>
+                    <span>جولة جديدة</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Players Grid -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5" id="players-grid">
+            <!-- Dynamically Rendered -->
+        </div>
+
+        <!-- Rounds Log Table -->
+        <div class="glass-panel rounded-2xl overflow-hidden border border-slate-800">
+            <div class="px-4 py-2.5 bg-slate-900/60 border-b border-slate-800 flex items-center justify-between">
+                <h3 class="text-xs font-bold text-slate-300 flex items-center gap-1.5">
+                    <i class="fa-solid fa-list-ol text-amber-400"></i>
+                    جدول جولات القيم
+                </h3>
+                <span class="text-[10px] text-slate-400 font-bold" id="rounds-count-label">0 جولات</span>
+            </div>
+            <div class="overflow-x-auto custom-scrollbar">
+                <table class="rounds-table w-full text-center text-xs">
+                    <thead>
+                        <tr class="bg-slate-950/60 text-slate-400 font-bold border-b border-slate-800/80" id="rounds-table-header">
+                            <!-- Headers rendered dynamically -->
+                        </tr>
+                    </thead>
+                    <tbody id="rounds-table-body" class="divide-y divide-slate-800/50">
+                        <!-- History rows rendered dynamically -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal: Setup Players -->
+    <div id="modal-player-setup" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="glass-panel w-full max-w-sm sm:max-w-md md:max-w-lg rounded-3xl p-5 border border-slate-700 space-y-4 max-h-[92vh] overflow-y-auto custom-scrollbar">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                <h3 class="font-black text-sm text-amber-400 flex items-center gap-2">
+                    <i class="fa-solid fa-users"></i>
+                    تعيين أسماء اللاعبين الاربعة
+                </h3>
+                <button onclick="closeModal('modal-player-setup')" type="button" class="text-slate-400 hover:text-slate-200">
+                    <i class="fa-solid fa-xmark text-base"></i>
+                </button>
+            </div>
+
+            <!-- Saved Players Quick Pick -->
+            <div id="saved-names-container" class="space-y-1.5 hidden">
+                <span class="text-[11px] text-slate-400 block font-bold">اختيار سريع: اضغط خانة اللاعب ثم اضغط الاسم</span>
+                <div class="flex flex-wrap gap-1.5 max-h-24 overflow-y-auto custom-scrollbar p-1" id="saved-names-pills">
+                    <!-- Pills inserted here -->
+                </div>
+            </div>
+
+            <!-- 4 Player Name Inputs -->
+            <div class="space-y-2.5">
+                <div>
+                    <label class="text-[11px] font-bold text-slate-400 block mb-1">اللاعب 1:</label>
+                    <input type="text" id="input-p1" onfocus="setNameSlot(1)" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-100 font-bold focus:border-amber-400 focus:outline-none">
+                </div>
+                <div>
+                    <label class="text-[11px] font-bold text-slate-400 block mb-1">اللاعب 2:</label>
+                    <input type="text" id="input-p2" onfocus="setNameSlot(2)" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-100 font-bold focus:border-amber-400 focus:outline-none">
+                </div>
+                <div>
+                    <label class="text-[11px] font-bold text-slate-400 block mb-1">اللاعب 3:</label>
+                    <input type="text" id="input-p3" onfocus="setNameSlot(3)" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-100 font-bold focus:border-amber-400 focus:outline-none">
+                </div>
+                <div>
+                    <label class="text-[11px] font-bold text-slate-400 block mb-1">اللاعب 4:</label>
+                    <input type="text" id="input-p4" onfocus="setNameSlot(4)" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-100 font-bold focus:border-amber-400 focus:outline-none">
+                </div>
+            </div>
+
+            <button onclick="savePlayerNames()" type="button" class="w-full bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-black py-2.5 rounded-xl text-xs shadow-lg shadow-amber-500/20 transition">
+                حفظ وبدء اللعب
+            </button>
+        </div>
+    </div>
+
+    <!-- Modal: Round Step 1 - Select Winner & Hand Type -->
+    <div id="modal-round-step1" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="glass-panel w-full max-w-sm sm:max-w-md md:max-w-lg rounded-3xl p-5 border border-slate-700 space-y-4 max-h-[92vh] flex flex-col">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+                <h3 class="font-black text-sm text-amber-400 flex items-center gap-1.5">
+                    <i class="fa-solid fa-crown text-amber-400"></i>
+                    تحديد الفائز ونوع الهاند
+                </h3>
+                <button onclick="closeModal('modal-round-step1')" type="button" class="text-slate-400 hover:text-slate-200">
+                    <i class="fa-solid fa-xmark text-base"></i>
+                </button>
+            </div>
+
+            <!-- Scrollable middle, so the continue button below never gets pushed off-screen -->
+            <div class="flex-1 overflow-y-auto custom-scrollbar space-y-4 pr-0.5 -mr-0.5">
+                <!-- Select Winner -->
+                <div>
+                    <label class="text-xs font-bold text-slate-300 block mb-2">من اللاعب الفائز في الهاند؟</label>
+                    <div class="grid grid-cols-2 gap-2" id="winner-selection-grid">
+                        <!-- Dynamic Winner Buttons -->
+                    </div>
+                </div>
+
+                <!-- Select Hand Type -->
+                <div>
+                    <label class="text-xs font-bold text-slate-300 block mb-2">نوع الهاند / الطايرة:</label>
+                    <div class="grid grid-cols-2 gap-2">
+                        <button onclick="selectEndingType('tayara')" id="btn-hand-tayara" type="button" class="ending-type-btn p-2.5 rounded-xl border border-slate-700 bg-slate-900 text-xs font-bold text-slate-300 flex items-center justify-center gap-1.5">
+                            <span>✈️ طايرة — خصم 30</span>
+                        </button>
+                        <button onclick="selectEndingType('hand_normal')" id="btn-hand-hand_normal" type="button" class="ending-type-btn p-2.5 rounded-xl border border-slate-700 bg-slate-900 text-xs font-bold text-slate-300 flex items-center justify-center gap-1.5">
+                            <span>🎴 هاند 200 — خصم 60</span>
+                        </button>
+                        <button onclick="selectEndingType('hand_400')" id="btn-hand-hand_400" type="button" class="ending-type-btn p-2.5 rounded-xl border border-slate-700 bg-slate-900 text-xs font-bold text-slate-300 flex items-center justify-center gap-1.5">
+                            <span>🔥 هاند 400 — خصم 120</span>
+                        </button>
+                        <button onclick="selectEndingType('hand_800')" id="btn-hand-hand_800" type="button" class="ending-type-btn p-2.5 rounded-xl border border-slate-700 bg-slate-900 text-xs font-bold text-slate-300 flex items-center justify-center gap-1.5">
+                            <span>⚡ هاند 800 — خصم 240</span>
+                        </button>
+                        <button onclick="selectEndingType('hand_1200')" id="btn-hand-hand_1200" type="button" class="ending-type-btn p-2.5 rounded-xl border border-slate-700 bg-slate-900 text-xs font-bold text-slate-300 flex items-center justify-center gap-1.5 col-span-2">
+                            <span>💥 هاند 1200 — خصم 360</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="space-y-2 shrink-0">
+                <button onclick="finishRoundNoDrop()" id="btn-no-drop-all" type="button" class="w-full bg-gradient-to-r from-emerald-600 to-emerald-500 text-white font-black py-2.5 rounded-xl text-xs shadow-lg shadow-emerald-600/20 transition">
+                    🚫 محد نزل — الكل يأخذ الأساس
+                </button>
+                <button onclick="proceedToOtherPlayers()" type="button" class="w-full bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-black py-2.5 rounded-xl text-xs shadow-lg shadow-amber-500/20 transition">
+                    متابعة احتساب الخاسرين ➔
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Round Step 2 - Calculate Loser Scores -->
+    <div id="modal-round-step2" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="glass-panel w-full max-w-sm sm:max-w-md md:max-w-lg rounded-3xl p-5 border border-slate-700 space-y-4 max-h-[92vh] flex flex-col">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+                <div>
+                    <h3 class="font-black text-sm text-slate-100" id="step2-player-title">أوراق اللاعب</h3>
+                    <p class="text-[10px] text-amber-400 font-bold" id="step2-penalty-hint">عدم التنزيل = 200 نقطة</p>
+                </div>
+                <span class="text-xs bg-slate-800 text-slate-400 px-2 py-0.5 rounded-full font-bold" id="step2-player-step">1 / 3</span>
+            </div>
+
+            <!-- Scrollable middle: cards, pad and multiplier can grow (chips wrapping,
+                 حارق toggle, etc.) without ever pushing the nav buttons off-screen. -->
+            <div class="flex-1 overflow-y-auto custom-scrollbar space-y-4 pr-0.5 -mr-0.5">
+                <!-- Selected Cards Area -->
+                <div class="bg-slate-900/90 border border-slate-800 p-3 rounded-2xl min-h-[70px] space-y-2">
+                    <div class="flex items-center justify-between text-[11px] text-slate-400 font-bold border-b border-slate-800 pb-1">
+                        <span>الأوراق المختارة:</span>
+                        <div class="flex items-center gap-2">
+                            <button onclick="toggleHarq()" id="btn-harq-toggle" type="button" class="text-[10px] font-bold px-2 py-1 rounded-lg border border-orange-500/40 text-orange-300 bg-orange-500/10">
+                                🔥 حارق (+200)
+                            </button>
+                            <button onclick="clearCards()" type="button" class="text-rose-400 hover:text-rose-300 text-[10px]">
+                                <i class="fa-solid fa-trash"></i> مسح
+                            </button>
+                        </div>
+                    </div>
+                    <div class="flex flex-wrap gap-1.5 min-h-[30px]" id="selected-cards-chips">
+                        <span class="text-xs text-slate-500 italic">لم تُحدد أوراق (سيُحسب عدم النزول تلقائياً)...</span>
+                    </div>
+                    <div class="flex items-center justify-between pt-1 border-t border-slate-800/60 font-black text-xs">
+                        <span class="text-slate-400">المجموع الحالي:</span>
+                        <span class="text-amber-400 text-sm" id="current-cards-sum">0 نقطة</span>
+                    </div>
+                </div>
+
+                <!-- Quick Cards Pad -->
+                <div class="grid grid-cols-4 gap-1.5" id="cards-pad-grid">
+                    <!-- Buttons dynamically built -->
+                </div>
+
+                <!-- Multiplier Info (fixed per hand type, not user-editable) -->
+                <div class="flex items-center justify-between bg-slate-900/60 p-2.5 rounded-xl border border-slate-800">
+                    <span class="text-xs font-bold text-slate-300">مضاعفة الأوراق النازلة:</span>
+                    <span id="btn-multiplier-toggle" class="bg-amber-500/10 text-amber-300 px-3 py-1 rounded-lg text-xs font-black border border-amber-500/30">
+                        ×1
+                    </span>
+                </div>
+            </div>
+
+            <!-- Navigation Buttons: stay outside the scroll area so they're always visible -->
+            <div class="flex gap-2 pt-1 shrink-0">
+                <button onclick="previousPlayerStep()" id="btn-prev-step" type="button" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-300 py-2.5 rounded-xl text-xs font-bold transition">
+                    السابق
+                </button>
+                <button onclick="nextPlayerStep()" id="btn-next-step" type="button" class="flex-1 bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-black py-2.5 rounded-xl text-xs shadow-lg shadow-amber-500/20 transition">
+                    التالي ➔
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Reset Game Confirmation -->
+    <div id="modal-confirm-reset" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="glass-panel w-full max-w-xs sm:max-w-sm rounded-3xl p-5 border border-rose-500/30 space-y-4 text-center">
+            <div class="w-12 h-12 bg-rose-500/20 text-rose-400 rounded-2xl flex items-center justify-center mx-auto text-xl font-bold">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+            <div>
+                <h3 class="font-black text-sm text-slate-100">بدء قيم جديد؟</h3>
+                <p class="text-xs text-slate-400 mt-1 leading-relaxed">
+                    هل أنت تأكد من إلغاء القيم الحالي وتصفير الجولات والنقاط؟
+                </p>
+            </div>
+            <div class="flex gap-2 pt-1">
+                <button onclick="closeModal('modal-confirm-reset')" type="button" class="flex-1 bg-slate-800 text-slate-300 py-2 rounded-xl text-xs font-bold">
+                    إلغاء
+                </button>
+                <button onclick="executeResetGame()" type="button" class="flex-1 bg-rose-600 hover:bg-rose-500 text-white font-bold py-2 rounded-xl text-xs shadow-lg shadow-rose-600/20">
+                    نعم، قيم جديد
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Wipe All-Time Stats Confirmation (above the stats modal) -->
+    <div id="modal-confirm-stats-wipe" class="fixed inset-0 z-[60] bg-slate-950/85 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="glass-panel w-full max-w-xs sm:max-w-sm rounded-3xl p-5 border border-rose-500/30 space-y-4 text-center">
+            <div class="w-12 h-12 bg-rose-500/20 text-rose-400 rounded-2xl flex items-center justify-center mx-auto text-xl font-bold">
+                <i class="fa-solid fa-trash-can"></i>
+            </div>
+            <div>
+                <h3 class="font-black text-sm text-slate-100">مسح السجل التراكمي؟</h3>
+                <p class="text-xs text-slate-400 mt-1 leading-relaxed">
+                    ينمسح التراكمي وسجل الأيام نهائيًا ولا يمكن الرجوع عنه. جولات الجلسة الحالية ما تنمسح.
+                </p>
+            </div>
+            <input type="password" id="stats-wipe-pin" inputmode="numeric" maxlength="4" autocomplete="off" placeholder="أدخل الرقم السري (4 أرقام)" oninput="this.value=this.value.replace(/\D/g,'').slice(0,4)" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-100 text-center tracking-[0.4em] focus:outline-none focus:border-rose-500">
+            <p class="text-[10px] text-rose-300 hidden" id="stats-wipe-error">الرقم السري غير صحيح — ما انمسح شيء</p>
+            <div class="flex gap-2 pt-1">
+                <button onclick="closeModal('modal-confirm-stats-wipe')" type="button" class="flex-1 bg-slate-800 text-slate-300 py-2 rounded-xl text-xs font-bold">
+                    إلغاء
+                </button>
+                <button onclick="resetStatsHistory()" type="button" class="flex-1 bg-rose-600 hover:bg-rose-500 text-white font-bold py-2 rounded-xl text-xs shadow-lg shadow-rose-600/20">
+                    نعم، امسح
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Game Over / Winner Celebration -->
+    <div id="modal-game-over" class="fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-md hidden flex items-center justify-center p-4">
+        <div class="glass-panel w-full max-w-sm sm:max-w-md md:max-w-lg rounded-3xl p-6 border border-amber-500/40 text-center space-y-5 relative overflow-y-auto max-h-[92vh] custom-scrollbar">
+            <div class="absolute -top-10 -right-10 w-32 h-32 bg-amber-500/10 rounded-full blur-2xl"></div>
+
+            <div class="w-16 h-16 bg-gradient-to-tr from-amber-500 to-amber-300 text-slate-950 rounded-3xl flex items-center justify-center mx-auto text-3xl shadow-xl shadow-amber-500/30">
+                👑
+            </div>
+
+            <div>
+                <span class="text-xs font-black text-amber-400 bg-amber-500/10 border border-amber-500/20 px-3 py-1 rounded-full uppercase tracking-wider">نهاية القيم (9 جولات)</span>
+                <h2 class="text-xl font-black text-slate-100 mt-2">نتائج التتويج والترتيب</h2>
+                <p class="text-xs text-slate-400 font-bold mt-1" id="game-total-duration"></p>
+            </div>
+
+            <!-- Top 1st & Last Podium -->
+            <div class="space-y-2 text-right">
+                <!-- First Place (Lowest Score) -->
+                <div class="bg-amber-500/15 border-2 border-amber-500/50 p-3.5 rounded-2xl flex items-center justify-between">
+                    <div class="flex items-center space-x-2 space-x-reverse">
+                        <span class="text-2xl">🥇</span>
+                        <div>
+                            <span class="text-[10px] text-amber-400 font-bold block">المركز الأول (أقل نقاط)</span>
+                            <span class="font-extrabold text-sm text-slate-100" id="winner-1st-name">-</span>
+                        </div>
+                    </div>
+                    <span class="text-lg font-black text-amber-300" id="winner-1st-score" dir="ltr">0 ن</span>
+                </div>
+
+                <!-- Second Place -->
+                <div class="bg-slate-900/60 border border-slate-700 p-2.5 rounded-2xl flex items-center justify-between">
+                    <div class="flex items-center space-x-2 space-x-reverse">
+                        <span class="text-lg">🥈</span>
+                        <div>
+                            <span class="text-[10px] text-slate-400 font-bold block">المركز الثاني</span>
+                            <span class="font-bold text-xs text-slate-200" id="winner-2nd-name">-</span>
+                            <span class="text-[9px] text-sky-300 font-bold block" id="winner-2nd-gap"></span>
+                        </div>
+                    </div>
+                    <span class="text-sm font-black text-slate-300" id="winner-2nd-score" dir="ltr">0 ن</span>
+                </div>
+
+                <!-- Third Place -->
+                <div class="bg-slate-900/60 border border-slate-700 p-2.5 rounded-2xl flex items-center justify-between">
+                    <div class="flex items-center space-x-2 space-x-reverse">
+                        <span class="text-lg">🥉</span>
+                        <div>
+                            <span class="text-[10px] text-slate-400 font-bold block">المركز الثالث</span>
+                            <span class="font-bold text-xs text-slate-200" id="winner-3rd-name">-</span>
+                            <span class="text-[9px] text-sky-300 font-bold block" id="winner-3rd-gap"></span>
+                        </div>
+                    </div>
+                    <span class="text-sm font-black text-slate-300" id="winner-3rd-score" dir="ltr">0 ن</span>
+                </div>
+
+                <!-- Last Place (Highest Score - Khabbas) -->
+                <div class="bg-rose-950/30 border border-rose-500/40 p-3 rounded-2xl flex items-center justify-between">
+                    <div class="flex items-center space-x-2 space-x-reverse">
+                        <span class="text-xl">💩</span>
+                        <div>
+                            <span class="text-[10px] text-rose-400 font-bold block">المركز الأخير (خباص - أعلى نقاط)</span>
+                            <span class="font-bold text-xs text-rose-200" id="winner-last-name">-</span>
+                            <span class="text-[9px] text-rose-300 font-bold block" id="winner-last-gap"></span>
+                        </div>
+                    </div>
+                    <span class="text-sm font-black text-rose-300" id="winner-last-score" dir="ltr">0 ن</span>
+                </div>
+            </div>
+
+            <button onclick="executeResetGame()" type="button" class="w-full bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-black py-3 rounded-2xl text-xs shadow-xl shadow-amber-500/20 transition">
+                بدء قيم جديد الآن 🃏
+            </button>
+        </div>
+    </div>
+
+    <!-- Modal: Stats & History -->
+    <div id="modal-stats" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="glass-panel w-full max-w-sm sm:max-w-lg md:max-w-2xl rounded-3xl p-5 border border-slate-700 space-y-4 max-h-[85vh] flex flex-col">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-2 flex-shrink-0">
+                <h3 class="font-black text-sm text-indigo-300 flex items-center gap-1.5">
+                    <i class="fa-solid fa-trophy"></i>
+                    السجل والإحصائيات التراكمية
+                </h3>
+                <button onclick="closeModal('modal-stats')" type="button" class="text-slate-400 hover:text-slate-200">
+                    <i class="fa-solid fa-xmark text-base"></i>
+                </button>
+            </div>
+
+            <!-- Stats Tabs -->
+            <div class="flex bg-slate-900 p-1 rounded-xl border border-slate-800 flex-shrink-0 text-xs">
+                <button onclick="switchStatsTab('overall')" id="tab-btn-overall" type="button" class="flex-1 py-2 rounded-lg font-bold bg-indigo-600 text-white transition">
+                    الأبطال والهاند
+                </button>
+                <button onclick="switchStatsTab('history')" id="tab-btn-history" type="button" class="flex-1 py-2 rounded-lg font-bold text-slate-400 transition">
+                    سجل الأيام السابق
+                </button>
+            </div>
+
+            <!-- Tab Content (Scrollable) -->
+            <div class="flex-1 overflow-y-auto custom-scrollbar space-y-3 pr-1">
+                <p id="stats-commit-note" class="text-[10px] text-slate-500 leading-relaxed bg-slate-900/60 border border-slate-800 rounded-xl px-3 py-2">
+                    <i class="fa-solid fa-circle-info text-sky-400"></i>
+                    الإحصائيات تنحفظ بعد الجولة التاسعة فقط — أي تجربة أو حذف جولة قبل نهايتها ما ينحسب.
+                </p>
+                <!-- Tab 1: Overall Champions -->
+                <div id="stats-tab-overall" class="space-y-3">
+                    <div class="stat-divider"><span class="line"></span><span class="label">الأبطال</span><span class="line"></span></div>
+
+                    <div class="stat-card">
+                        <h4 class="text-xs font-bold text-amber-300 mb-2 flex items-center gap-1.5">
+                            <i class="fa-solid fa-crown text-amber-300"></i>
+                            أكثر اللاعبين فوزاً بالألعاب
+                        </h4>
+                        <div id="champions-leaderboard" class="space-y-1.5 text-xs">
+                            <!-- Dynamic stats -->
+                        </div>
+                    </div>
+
+                    <div class="stat-divider"><span class="line"></span><span class="label">الهاندات</span><span class="line"></span></div>
+
+                    <div class="stat-card">
+                        <h4 class="text-xs font-bold text-sky-300 mb-2 flex items-center gap-1.5">
+                            <i class="fa-solid fa-fire text-amber-500"></i>
+                            أكثر أنواع الهاند تحقيقاً
+                        </h4>
+                        <div id="hand-types-stats" class="space-y-1.5 text-xs">
+                            <!-- Dynamic stats -->
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <h4 class="text-xs font-bold text-emerald-300 mb-2 flex items-center gap-1.5">
+                            <i class="fa-solid fa-table-list"></i>
+                            إنجازات كل لاعب بالتفصيل
+                        </h4>
+                        <div class="overflow-x-auto custom-scrollbar">
+                            <table class="w-full text-center text-[10px]">
+                                <thead>
+                                    <tr class="text-slate-400 font-bold border-b border-slate-800" id="player-hand-table-header"></tr>
+                                </thead>
+                                <tbody id="player-hand-table-body" class="divide-y divide-slate-800/50"></tbody>
+                            </table>
+                        </div>
+                        <p class="text-[9px] text-slate-500 mt-1.5 leading-relaxed">
+                            النزول: عدد الجولات التي سجّل فيها أوراقه عند الخسارة، وتحتها مجموع الأوراق.
+                        </p>
+                    </div>
+
+                    <div class="stat-card">
+                        <h4 class="text-xs font-bold text-amber-300 mb-2 flex items-center gap-1.5">
+                            <i class="fa-solid fa-medal"></i>
+                            بطل كل نوع هاند
+                        </h4>
+                        <div id="hand-champions" class="space-y-1.5 text-xs">
+                            <!-- Dynamic stats -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab 2: History Days -->
+                <div id="stats-tab-history" class="space-y-3 hidden">
+                    <div class="stat-divider"><span class="line"></span><span class="label">سجل الألعاب</span><span class="line"></span></div>
+                    <div id="history-list-container" class="space-y-2 text-xs">
+                        <!-- Saved days history list -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="border-t border-slate-800 pt-3 flex flex-wrap justify-between items-center gap-2 flex-shrink-0">
+                <div class="flex items-center gap-3">
+                    <button onclick="confirmStatsWipe()" type="button" class="text-rose-400 hover:text-rose-300 text-xs font-bold flex items-center gap-1">
+                        <i class="fa-solid fa-trash-can"></i> مسح السجل التراكمي
+                    </button>
+                    <button onclick="restoreStatsBackup()" id="btn-restore-backup" type="button" class="hidden text-emerald-400 hover:text-emerald-300 text-xs font-bold flex items-center gap-1">
+                        <i class="fa-solid fa-rotate-left"></i> استعادة الممسوح
+                    </button>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button onclick="openSessionReport()" type="button" class="bg-sky-600/20 hover:bg-sky-600/30 text-sky-300 border border-sky-500/40 px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1 transition">
+                        <i class="fa-solid fa-clipboard-list"></i> تقرير الليلة
+                    </button>
+                    <button onclick="exportStatsJson()" type="button" class="bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-300 border border-emerald-500/40 px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1 transition">
+                        <i class="fa-solid fa-file-code"></i> تصدير JSON
+                    </button>
+                    <button onclick="closeModal('modal-stats')" type="button" class="bg-slate-800 hover:bg-slate-700 text-slate-300 px-4 py-1.5 rounded-xl text-xs font-bold">
+                        إغلاق
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lock Screen: an account on this device stays closed until its PIN is entered -->
+    <div id="lock-overlay" class="fixed inset-0 z-[80] bg-slate-950/95 backdrop-blur-md hidden items-center justify-center p-6">
+        <div class="glass-panel w-full max-w-xs rounded-3xl p-6 border border-indigo-500/30 space-y-3 text-center">
+            <div class="w-12 h-12 bg-indigo-500/20 text-indigo-300 rounded-2xl flex items-center justify-center mx-auto text-xl">
+                <i class="fa-solid fa-lock"></i>
+            </div>
+            <h3 class="font-black text-sm text-slate-100">الحساب مقفل</h3>
+            <p class="text-[11px] text-slate-300 truncate" id="lock-email"></p>
+            <input type="password" id="lock-pin-input" inputmode="numeric" maxlength="4" autocomplete="off" placeholder="الرقم السري (4 أرقام)" oninput="this.value=this.value.replace(/\D/g,'').slice(0,4)" onkeydown="if(event.key==='Enter')unlockAccount()" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-100 text-center tracking-[0.4em] focus:outline-none focus:border-indigo-500">
+            <button onclick="unlockAccount()" type="button" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white py-2 rounded-xl text-xs font-bold transition">
+                فتح
+            </button>
+            <p class="text-[10px] text-rose-300 min-h-[14px]" id="lock-status"></p>
+        </div>
+    </div>
+
+    <!-- Round-end sounds: the group's own recordings, one for round 7 and one for round 8 -->
+    <audio id="sfx-round7" src="audio/round7.m4a" preload="auto"></audio>
+    <audio id="sfx-round8" src="audio/round8.m4a" preload="auto"></audio>
+
+    <!-- Application Script Logic -->
+    <script>
+        // === Cloud sync: Vercel serverless functions (/api/save, /api/load) backed by Turso ===
+        // No database credentials live in this page - they stay server-side as env vars on Vercel.
+        function setSyncStatus(text) {
+            const el = document.getElementById('sync-status-label');
+            if (el) el.innerText = text;
+        }
+
+        // Saves the whole app state as one row keyed by the user's email. Every save
+        // carries the account PIN, so knowing the email alone can't overwrite stats.
+        async function saveStateToCloud() {
+            if (!state.email) return;
+            if (!state.pin) {
+                setSyncStatus('الحساب مقفل — أدخل الرقم السري للمزامنة');
+                return;
+            }
+            try {
+                setSyncStatus('جارٍ الحفظ في السحابة...');
+                const res = await fetch('/api/save', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        email: state.email,
+                        pin: state.pin,
+                        players: state.players,
+                        currentRound: state.currentRound,
+                        roundsHistory: state.roundsHistory,
+                        savedNames: state.savedNames,
+                        stats: state.stats,
+                        daysHistory: state.daysHistory,
+                        currentGameHands: state.currentGameHands,
+                        gameStartedAt: state.gameStartedAt,
+                        lastRoundEndTime: state.lastRoundEndTime,
+                        statsCommittedRounds: state.statsCommittedRounds,
+                        handsCountedForGame: state.handsCountedForGame
+                    })
+                });
+                if (res.status === 401) {
+                    lockAccount('انتهت الجلسة — أعد إدخال الرقم السري');
+                    return;
+                }
+                if (!res.ok) throw new Error('save failed: ' + res.status);
+                setSyncStatus('تم الحفظ في السحابة ✅');
+            } catch (e) {
+                console.error('Cloud save failed', e);
+                setSyncStatus('تعذر الحفظ في السحابة (تحقق من الاتصال)');
+            }
+        }
+
+        // Fills the app state from an /api/auth response. Null data means the account
+        // is new, so whatever the caller prepared (a clean slate) stays as it is.
+        function applyCloudData(data) {
+            if (!data) return;
+            if (data.players) state.players = data.players;
+            if (data.currentRound !== undefined) state.currentRound = data.currentRound;
+            if (data.roundsHistory) state.roundsHistory = data.roundsHistory;
+            if (data.savedNames) state.savedNames = data.savedNames;
+            if (data.stats) state.stats = data.stats;
+            if (data.daysHistory) state.daysHistory = data.daysHistory;
+            if (data.currentGameHands) state.currentGameHands = data.currentGameHands;
+            if (data.gameStartedAt) state.gameStartedAt = data.gameStartedAt;
+            if (data.lastRoundEndTime) state.lastRoundEndTime = data.lastRoundEndTime;
+            migrateStatsCounters(
+                data.statsCommittedRounds !== undefined,
+                data.handsCountedForGame !== undefined,
+                state.roundsHistory
+            );
+            syncGameHandsFromHistory();
+        }
+
+        // Safe JSON read: falls back to a default instead of throwing and breaking the whole script
+        function safeParse(key, fallback) {
+            try {
+                const raw = localStorage.getItem(key);
+                return raw ? JSON.parse(raw) : fallback;
+            } catch (e) {
+                return fallback;
+            }
+        }
+
+        function escapeHtml(str) {
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        // Global App State
+        const DEFAULT_SAVED_NAMES = ["خالد", "عبدالله", "محمد", "سعود", "فهد", "فيصل"];
+        const EMPTY_STATS = () => ({ gamesPlayed: 0, playerWins: {}, handCounts: {}, playerHandCounts: {}, playerDropCounts: {}, playerDropCards: {}, harqCount: 0 });
+
+        let state = {
+            email: localStorage.getItem('hind_user_email') || '',
+            // Remembered on this device so reopening the app doesn't ask again.
+            // The server still enforces it on every cloud call and every stats wipe.
+            pin: localStorage.getItem('hind_user_pin') || '',
+            players: ['لاعب 1', 'لاعب 2', 'لاعب 3', 'لاعب 4'],
+            savedNames: safeParse('hind_saved_names', DEFAULT_SAVED_NAMES),
+            currentRound: 0,
+            roundsHistory: [],
+            lastRoundEndTime: null,
+            currentGameHands: {},
+            gameStartedAt: null,
+            // How much of this game already reached the all-time stats, so a finished
+            // game is never counted twice and a mid-game reset counts nothing.
+            statsCommittedRounds: 0,
+            handsCountedForGame: false,
+            stats: safeParse('hind_global_stats', EMPTY_STATS()),
+            daysHistory: safeParse('hind_days_history', [])
+        };
+
+        let currentRoundDraft = null;
+        // Which player-name input the user last tapped (1-4) in the names modal.
+        let activeNameSlot = null;
+
+        const DEFAULT_CARDS = [
+            { label: 'A (11)', val: 11, rank: 'A', suit: '♠', color: 'text-slate-900' },
+            { label: 'K (10)', val: 10, rank: 'K', suit: '♥', color: 'text-rose-600' },
+            { label: 'Q (10)', val: 10, rank: 'Q', suit: '♦', color: 'text-rose-600' },
+            { label: 'J (10)', val: 10, rank: 'J', suit: '♣', color: 'text-slate-900' },
+            { label: '10', val: 10, rank: '10', suit: '♠', color: 'text-slate-900' },
+            { label: '9', val: 9, rank: '9', suit: '♥', color: 'text-rose-600' },
+            { label: '8', val: 8, rank: '8', suit: '♦', color: 'text-rose-600' },
+            { label: '7', val: 7, rank: '7', suit: '♣', color: 'text-slate-900' },
+            { label: '6', val: 6, rank: '6', suit: '♠', color: 'text-slate-900' },
+            { label: '5', val: 5, rank: '5', suit: '♥', color: 'text-rose-600' },
+            { label: '4', val: 4, rank: '4', suit: '♦', color: 'text-rose-600' },
+            { label: '3', val: 3, rank: '3', suit: '♣', color: 'text-slate-900' },
+            { label: '2', val: 2, rank: '2', suit: '♠', color: 'text-slate-900' },
+            { label: 'جوكر (50)', val: 50, rank: '🃏', suit: '', color: 'text-amber-600' }
+        ];
+
+        window.onload = async function() {
+            loadLocalState();
+            renderUI();
+            // The PIN is remembered on this device, so the app opens straight away.
+            // It is only asked for again if the server rejects it, or for a stats wipe.
+            refreshAccountFromCloud();
+        };
+
+        function saveState() {
+            localStorage.setItem('hind_user_email', state.email);
+            if (state.pin) localStorage.setItem('hind_user_pin', state.pin);
+            else localStorage.removeItem('hind_user_pin');
+            localStorage.setItem('hind_saved_names', JSON.stringify(state.savedNames));
+            localStorage.setItem('hind_global_stats', JSON.stringify(state.stats));
+            localStorage.setItem('hind_days_history', JSON.stringify(state.daysHistory));
+            localStorage.setItem('hind_active_game', JSON.stringify({
+                players: state.players,
+                currentRound: state.currentRound,
+                roundsHistory: state.roundsHistory,
+                currentGameHands: state.currentGameHands,
+                gameStartedAt: state.gameStartedAt,
+                lastRoundEndTime: state.lastRoundEndTime,
+                statsCommittedRounds: state.statsCommittedRounds,
+                handsCountedForGame: state.handsCountedForGame
+            }));
+            // Fire-and-forget: keeps the UI instant via localStorage while syncing to the cloud in the background
+            saveStateToCloud();
+        }
+
+        function loadLocalState() {
+            const activeGame = localStorage.getItem('hind_active_game');
+            if (activeGame) {
+                try {
+                    const parsed = JSON.parse(activeGame);
+                    if (parsed.players) state.players = parsed.players;
+                    if (parsed.currentRound !== undefined) state.currentRound = parsed.currentRound;
+                    if (parsed.roundsHistory) state.roundsHistory = parsed.roundsHistory;
+                    if (parsed.currentGameHands) state.currentGameHands = parsed.currentGameHands;
+                    if (parsed.gameStartedAt) state.gameStartedAt = parsed.gameStartedAt;
+                    if (parsed.lastRoundEndTime) state.lastRoundEndTime = parsed.lastRoundEndTime;
+                    migrateStatsCounters(
+                        parsed.statsCommittedRounds !== undefined,
+                        parsed.handsCountedForGame !== undefined,
+                        state.roundsHistory
+                    );
+                    syncGameHandsFromHistory();
+                } catch(e) {}
+            }
+        }
+
+        // Games running before stats moved to commit-at-game-end already had every
+        // finished round added, so mark them as committed instead of counting again.
+        function migrateStatsCounters(hasRoundCounter, hasHandsFlag, rounds) {
+            if (hasRoundCounter && hasHandsFlag) return;
+            state.statsCommittedRounds = (rounds || []).length;
+            state.handsCountedForGame = (rounds || []).length > 0;
+        }
+
+        function renderUI() {
+            // Update Auth View
+            const loggedDisplay = document.getElementById('logged-email-display');
+            const authScreen = document.getElementById('auth-screen');
+            if (state.email) {
+                loggedDisplay.innerText = state.email;
+                if (authScreen) authScreen.classList.add('hidden');
+            } else {
+                loggedDisplay.innerText = 'زائر محلي';
+                if (authScreen) authScreen.classList.remove('hidden');
+            }
+            const emailEditBtn = document.getElementById('btn-change-email');
+            if (emailEditBtn) emailEditBtn.classList.toggle('hidden', !state.email);
+            const cancelEmailBtn = document.getElementById('btn-cancel-email');
+            if (cancelEmailBtn) cancelEmailBtn.classList.toggle('hidden', !state.email);
+
+            // Update Counter
+            document.getElementById('round-counter-display').innerText = `${state.currentRound} / 9`;
+            document.getElementById('rounds-count-label').innerText = `${state.roundsHistory.length} جولات`;
+
+            // Calculate Totals & Identify Khabbas (Highest Score)
+            const totals = calculateTotals();
+            const maxScore = Math.max(...totals);
+            const minScore = Math.min(...totals);
+            const showGapToFirst = state.currentRound === 8;
+
+            // Render Players Grid
+            const grid = document.getElementById('players-grid');
+            grid.innerHTML = '';
+            // Standings colors: 1st green, 2nd neutral, 3rd yellow, last red
+            const hasScores = maxScore !== minScore;
+            const rankNameColors = ['text-emerald-400', 'text-slate-200', 'text-amber-300', 'text-rose-400'];
+            const rankClasses = ['rank-first', 'rank-second', 'rank-third', 'rank-last'];
+
+            state.players.forEach((name, idx) => {
+                const total = totals[idx];
+                const rank = Math.min(
+                    state.players.reduce((acc, _other, i) => acc + (totals[i] < total ? 1 : 0), 0),
+                    3
+                );
+                const isKhabbas = (total === maxScore && total > 0);
+                const isFirst = (total === minScore && maxScore !== minScore);
+                const gap = total - minScore;
+
+                const card = document.createElement('div');
+                card.className = `player-card transition relative overflow-hidden ${
+                    hasScores ? rankClasses[rank] : ''
+                }`;
+                card.innerHTML = `
+                    ${isKhabbas ? '<span class="absolute top-2 left-2 bg-rose-600 text-white text-[9px] font-black px-1.5 py-0.5 rounded-md shadow">خباص 💩</span>' : (isFirst ? '<span class="absolute top-2 left-2 bg-emerald-600 text-white text-[9px] font-black px-1.5 py-0.5 rounded-md shadow">الأول 👑</span>' : '')}
+                    <span class="text-[11px] ${hasScores ? rankNameColors[rank] : 'text-slate-400'} font-bold block truncate max-w-[100px]">${escapeHtml(name)}</span>
+                    <div class="flex items-baseline justify-between mt-1">
+                        <span class="text-xl font-black ${total < 0 ? 'text-emerald-400' : 'text-amber-400'}" dir="ltr">${total}</span>
+                        <span class="text-[10px] text-slate-500 font-bold">نقطة</span>
+                    </div>
+                    ${showGapToFirst ? (
+                        gap === 0
+                            ? '<span class="text-[10px] font-bold text-amber-300 block mt-1">🥇 الأول حالياً</span>'
+                            : gapHintHtml(gap) + climbHintHtml(total, totals)
+                    ) : ''}
+                `;
+                grid.appendChild(card);
+            });
+
+            // Render Table Header
+            const header = document.getElementById('rounds-table-header');
+            header.innerHTML = `
+                <th class="col-index py-2 px-1">#</th>
+                <th class="col-time py-2 px-1">⏱</th>
+                ${state.players.map(p => `<th class="py-2 px-1 name-cell">${escapeHtml(p)}</th>`).join('')}
+                <th class="col-del py-2 px-1">مسح</th>
+            `;
+
+            // Render Table Body
+            const body = document.getElementById('rounds-table-body');
+            body.innerHTML = '';
+            state.roundsHistory.forEach((rd, rIdx) => {
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-slate-900/50 transition';
+                tr.innerHTML = `
+                    <td class="col-index py-2 px-1 font-black text-amber-400">${rIdx + 1}</td>
+                    <td class="col-time py-2 px-1 text-slate-400 font-bold">${formatDuration(rd.durationMs)}</td>
+                    ${rd.scores.map(s => `
+                        <td class="py-2 px-1 font-bold ${s < 0 ? 'text-emerald-400 font-extrabold' : 'text-slate-200'}" dir="ltr">
+                            ${s}
+                        </td>
+                    `).join('')}
+                    <td class="col-del py-2 px-1">
+                        <button onclick="deleteRound(${rIdx})" type="button" class="text-rose-400 hover:text-rose-300">
+                            <i class="fa-solid fa-xmark text-xs"></i>
+                        </button>
+                    </td>
+                `;
+                body.appendChild(tr);
+            });
+        }
+
+        function calculateTotals() {
+            const totals = [0, 0, 0, 0];
+            state.roundsHistory.forEach(rd => {
+                rd.scores.forEach((s, idx) => {
+                    totals[idx] += s;
+                });
+            });
+            return totals;
+        }
+
+        // mm:ss, for the compact per-round column in the rounds table
+        function formatDuration(ms) {
+            const totalSeconds = Math.max(0, Math.round((ms || 0) / 1000));
+            const m = Math.floor(totalSeconds / 60);
+            const s = totalSeconds % 60;
+            return `${m}:${s.toString().padStart(2, '0')}`;
+        }
+
+        // "Xدقيقة وYثانية", for the total-game-time summary
+        function formatDurationLong(ms) {
+            const totalSeconds = Math.max(0, Math.round((ms || 0) / 1000));
+            const m = Math.floor(totalSeconds / 60);
+            const s = totalSeconds % 60;
+            if (m <= 0) return `${s} ثانية`;
+            if (s === 0) return `${m} دقيقة`;
+            return `${m} دقيقة و${s} ثانية`;
+        }
+
+        // Round 9 can't end on a tayara, so the swing is between the winner's bonus
+        // and the no-drop penalty the leader (as a loser) would take - both apply at once.
+        const ROUND9_HAND_SWINGS = [
+            { type: 'hand_normal', label: 'هاند 200', swing: 200 + 60 },
+            { type: 'hand_400', label: 'هاند 400', swing: 400 + 120 },
+            { type: 'hand_800', label: 'هاند 800', swing: 800 + 240 },
+            { type: 'hand_1200', label: 'هاند 1200', swing: 1200 + 360 }
+        ];
+
+        // Winning a hand moves me down by its bonus while every loser moves up by the
+        // no-drop base, so my gap to the leader closes by `swing`. A swing exactly
+        // equal to the gap only ties for first; a strictly bigger one wins outright.
+        function getHandThresholds(gap) {
+            return {
+                tie: ROUND9_HAND_SWINGS.find(o => o.swing >= gap) || null,
+                win: ROUND9_HAND_SWINGS.find(o => o.swing > gap) || null
+            };
+        }
+
+        function gapHintHtml(gap) {
+            const { tie, win } = getHandThresholds(gap);
+            const line = (cls, text) => `<span class="text-[10px] font-bold ${cls} block mt-1">${text}</span>`;
+            // No hand puts me alone in first (the biggest swing only ties or falls
+            // short), so naming "هاند 1200" would promise something it can't deliver.
+            if (!win) return line('text-rose-300', 'ما لك أمل في الأول');
+            if (win.type === tie.type) return line('text-emerald-300', `يتفرد بالأول: ${win.label}`);
+            let html = line('text-sky-300', `يتعادل مع الأول: ${tie.label}`);
+            html += line('text-emerald-300', `يتفرد بالأول: ${win.label}`);
+            return html;
+        }
+
+        const RANK_NAMES = ['الأول', 'الثاني', 'الثالث', 'الرابع', 'الخامس', 'السادس', 'السابع', 'الثامن'];
+
+        function rankRangeLabel(from, to) {
+            const first = RANK_NAMES[from - 1] || `المركز ${from}`;
+            if (to === from) return first;
+            const last = RANK_NAMES[to - 1] || `المركز ${to}`;
+            return `${first} و${last}`;
+        }
+
+        const withAl = (label) => (label.startsWith('ال') ? `بال${label.slice(2)}` : `بـ${label}`);
+
+        // Every player behind first can climb too: each better score group is `diff`
+        // ahead and the same swing closes it, so 2nd/3rd need their own thresholds.
+        // Equal scores share a rank, so a tied pair shows as one combined target.
+        function climbHintHtml(total, totals) {
+            const groups = [];
+            [...totals].sort((a, b) => a - b).forEach((t) => {
+                const last = groups[groups.length - 1];
+                if (last && last.total === t) {
+                    last.count += 1;
+                    return;
+                }
+                groups.push({ total: t, startRank: totals.filter(x => x < t).length + 1, count: 1 });
+            });
+            const line = (cls, text) => `<span class="text-[10px] font-bold ${cls} block mt-1">${text}</span>`;
+            let html = '';
+            groups.forEach((g) => {
+                // The leader group is already covered by gapHintHtml above.
+                if (g.total >= total || g.startRank < 2) return;
+                const label = rankRangeLabel(g.startRank, g.startRank + g.count - 1);
+                const { tie, win } = getHandThresholds(total - g.total);
+                if (!win) {
+                    html += line('text-slate-400', `ما لك أمل في ${label}`);
+                } else if (win.type === tie.type) {
+                    html += line('text-emerald-300', `يتفرد ${withAl(label)}: ${win.label}`);
+                } else {
+                    html += line('text-sky-300', `يتعادل مع ${label}: ${tie.label}`);
+                    html += line('text-emerald-300', `يتفرد ${withAl(label)}: ${win.label}`);
+                }
+            });
+            return html;
+        }
+
+        // Chimes for the last two rounds: round 7 gets two rising notes (two rounds
+        // left) and round 8 gets a longer, more urgent three-note fanfare (last round).
+        function playRoundAlertTone(kind) {
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const seq = kind === 'eight'
+                    ? { notes: [880, 1046, 1318], type: 'triangle', step: 0.16, length: 0.26, volume: 0.32 }
+                    : { notes: [620, 830], type: 'sine', step: 0.18, length: 0.2, volume: 0.28 };
+                seq.notes.forEach((freq, i) => {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.type = seq.type;
+                    osc.frequency.value = freq;
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    const start = ctx.currentTime + i * seq.step;
+                    gain.gain.setValueAtTime(0.0001, start);
+                    gain.gain.exponentialRampToValueAtTime(seq.volume, start + 0.02);
+                    gain.gain.exponentialRampToValueAtTime(0.0001, start + seq.length);
+                    osc.start(start);
+                    osc.stop(start + seq.length + 0.05);
+                });
+            } catch (e) { /* audio not available on this device - ignore */ }
+        }
+
+        // Plays one of the two recorded round-end sounds. If the file cannot play
+        // (blocked or missing), the generated chime is used so it is never silent.
+        function playRoundSound(name) {
+            const el = document.getElementById('sfx-' + name);
+            const fallback = () => playRoundAlertTone(name === 'round7' ? 'seven' : 'eight');
+            if (!el) { fallback(); return; }
+            try {
+                el.currentTime = 0;
+                const playing = el.play();
+                if (playing && playing.catch) playing.catch(fallback);
+            } catch (e) {
+                fallback();
+            }
+        }
+
+        // Reopens the email card with the current address, so a typo can be fixed
+        // or the app moved to another account without clearing local data.
+        function openEmailChange() {
+            const authScreen = document.getElementById('auth-screen');
+            const input = document.getElementById('email-input');
+            const pinInput = document.getElementById('pin-input');
+            if (!authScreen || !input) return;
+            input.value = state.email || '';
+            if (pinInput) pinInput.value = state.pin || '';
+            authScreen.classList.remove('hidden');
+            setSyncStatus('عدّل البريد وأدخل رقمه السري ثم اضغط حفظ');
+            authScreen.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            (pinInput || input).focus();
+        }
+
+        function closeEmailCard() {
+            const authScreen = document.getElementById('auth-screen');
+            if (authScreen && state.email) {
+                authScreen.classList.add('hidden');
+                setSyncStatus('');
+            }
+        }
+
+        // Each email is its own account. Switching must start from a clean slate so a
+        // missing cloud row can't leave the previous account's game or stats behind.
+        function resetAccountState() {
+            state.players = ['لاعب 1', 'لاعب 2', 'لاعب 3', 'لاعب 4'];
+            state.savedNames = [...DEFAULT_SAVED_NAMES];
+            state.currentRound = 0;
+            state.roundsHistory = [];
+            state.lastRoundEndTime = null;
+            state.currentGameHands = {};
+            state.gameStartedAt = null;
+            state.statsCommittedRounds = 0;
+            state.handsCountedForGame = false;
+            state.stats = EMPTY_STATS();
+            state.daysHistory = [];
+            state.pin = '';
+        }
+
+        // The PIN is asked for again only when the server rejects the remembered one
+        // (e.g. it changed elsewhere), never on a normal page load.
+        function showLockOverlay(message) {
+            const overlay = document.getElementById('lock-overlay');
+            if (!overlay) return;
+            const emailEl = document.getElementById('lock-email');
+            if (emailEl) emailEl.innerText = state.email || '';
+            const status = document.getElementById('lock-status');
+            if (status) status.innerText = message || '';
+            const input = document.getElementById('lock-pin-input');
+            if (input) input.value = '';
+            overlay.classList.remove('hidden');
+            overlay.classList.add('flex');
+            if (input) setTimeout(() => input.focus(), 60);
+        }
+
+        function hideLockOverlay() {
+            const overlay = document.getElementById('lock-overlay');
+            if (!overlay) return;
+            overlay.classList.add('hidden');
+            overlay.classList.remove('flex');
+        }
+
+        function lockAccount(message) {
+            state.pin = '';
+            // Drop the remembered PIN so a rejected one isn't retried on every save.
+            localStorage.removeItem('hind_user_pin');
+            setSyncStatus(message || 'الحساب مقفل');
+            showLockOverlay(message);
+        }
+
+        // Pulls the latest cloud copy at start-up. A rejected PIN reopens the lock
+        // screen; being offline just leaves the local copy in place.
+        async function refreshAccountFromCloud() {
+            if (!state.email || !state.pin) return;
+            try {
+                const res = await fetch('/api/auth', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: state.email, pin: state.pin })
+                });
+                if (res.status === 401) {
+                    lockAccount('الرقم السري لهذا الحساب غير صحيح — أدخله من جديد');
+                    return;
+                }
+                if (!res.ok) return;
+                const result = await res.json();
+                applyCloudData(result.data);
+                renderUI();
+            } catch (e) { /* offline - the local copy keeps working */ }
+        }
+
+        async function unlockAccount() {
+            const input = document.getElementById('lock-pin-input');
+            const status = document.getElementById('lock-status');
+            const pin = (input ? input.value : '').trim();
+            const email = state.email;
+            if (!email) return;
+            if (!/^\d{4}$/.test(pin)) {
+                if (status) status.innerText = 'الرقم لازم 4 أرقام';
+                return;
+            }
+            if (status) status.innerText = 'جارٍ التحقق...';
+            try {
+                const res = await fetch('/api/auth', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, pin })
+                });
+                if (res.status === 401) {
+                    if (status) status.innerText = 'الرقم السري غير صحيح';
+                    return;
+                }
+                if (!res.ok) throw new Error('auth failed: ' + res.status);
+                const result = await res.json();
+                state.pin = pin;
+                applyCloudData(result.data);
+                hideLockOverlay();
+                setSyncStatus('متصل بالسحابة ✅');
+                saveState();
+                renderUI();
+            } catch (e) {
+                console.error('Cloud unlock failed', e);
+                if (status) status.innerText = 'تعذر الاتصال — تحقق من الإنترنت';
+            }
+        }
+
+        async function handleEmailLogin() {
+            const emailEl = document.getElementById('email-input');
+            const pinEl = document.getElementById('pin-input');
+            const emailInput = (emailEl ? emailEl.value : '').trim().toLowerCase();
+            const pin = (pinEl ? pinEl.value : '').trim();
+            if (!emailInput) {
+                setSyncStatus('أدخل البريد أولاً');
+                return;
+            }
+            if (!/^\d{4}$/.test(pin)) {
+                setSyncStatus('الرقم السري لازم 4 أرقام');
+                if (pinEl) pinEl.focus();
+                return;
+            }
+            const switching = state.email && emailInput !== state.email;
+            // The running game is already saved under the old email on every round,
+            // so switching loads the new account instead of losing this one.
+            if (switching && state.roundsHistory.length
+                && !confirm('اللعبة الحالية محفوظة على البريد السابق.\nالتبديل راح يجيب جولات وإحصائيات البريد الجديد. متابعة؟')) {
+                return;
+            }
+
+            setSyncStatus('جارٍ التحقق...');
+            let result;
+            try {
+                const res = await fetch('/api/auth', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: emailInput, pin })
+                });
+                // Wrong PIN leaves the current account (and its running game) untouched.
+                if (res.status === 401) {
+                    setSyncStatus('الرقم السري غير صحيح لهذا البريد');
+                    return;
+                }
+                if (!res.ok) throw new Error('auth failed: ' + res.status);
+                result = await res.json();
+            } catch (e) {
+                console.error('Cloud auth failed', e);
+                setSyncStatus('تعذر الاتصال بالسحابة (تحقق من الاتصال)');
+                return;
+            }
+
+            if (switching) resetAccountState();
+            state.email = emailInput;
+            state.pin = pin;
+            applyCloudData(result.data);
+            saveState();
+            renderUI();
+            hideLockOverlay();
+            if (pinEl) pinEl.value = '';
+            setSyncStatus(result.created ? 'تم إنشاء الحساب بهذا الرقم ✅' : 'تم الدخول ✅');
+            if (result.created) {
+                alert('تم ربط هذا البريد برقمك السري.\nاحفظه: صار كلمة مرور حسابك ولا يمكن استرجاعه.');
+            }
+        }
+
+        function confirmResetGame() {
+            openModal('modal-confirm-reset');
+        }
+
+        function executeResetGame() {
+            closeModal('modal-confirm-reset');
+            closeModal('modal-game-over');
+
+            state.currentRound = 0;
+            state.roundsHistory = [];
+            state.lastRoundEndTime = null;
+            state.currentGameHands = {};
+            state.gameStartedAt = null;
+            state.statsCommittedRounds = 0;
+            state.handsCountedForGame = false;
+            saveState();
+            renderUI();
+
+            openPlayerSetupModal();
+        }
+
+        function openPlayerSetupModal() {
+            setNameSlot(0);
+            renderSavedNamePills();
+
+            state.players.forEach((p, i) => {
+                const el = document.getElementById(`input-p${i+1}`);
+                if (el) el.value = p;
+            });
+
+            openModal('modal-player-setup');
+        }
+
+        function renderSavedNamePills() {
+            const pContainer = document.getElementById('saved-names-pills');
+            const savedContainer = document.getElementById('saved-names-container');
+            if (!pContainer || !savedContainer) return;
+
+            if (state.savedNames.length === 0) {
+                savedContainer.classList.add('hidden');
+                pContainer.innerHTML = '';
+                return;
+            }
+            savedContainer.classList.remove('hidden');
+            pContainer.innerHTML = state.savedNames.map((name, i) => `
+                <span class="flex items-stretch rounded-lg overflow-hidden border border-slate-700 bg-slate-800">
+                    <button onclick="quickPickName(${i})" type="button" class="hover:bg-slate-700 text-amber-300 text-[10px] font-bold px-2 py-1">
+                        + ${escapeHtml(name)}
+                    </button>
+                    <button onclick="removeSavedName(${i})" type="button" title="حذف الاسم من المحفوظات" class="border-r border-slate-700 hover:bg-rose-600/40 text-rose-400 px-1.5 py-1 text-[10px]">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </span>
+            `).join('');
+        }
+
+        // The slot the user tapped last: a saved name replaces its whole content.
+        function setNameSlot(idx) {
+            activeNameSlot = idx || null;
+            for (let i = 1; i <= 4; i++) {
+                const el = document.getElementById(`input-p${i}`);
+                if (!el) continue;
+                const on = i === idx;
+                el.style.borderColor = on ? '#fbbf24' : '';
+                el.style.boxShadow = on ? '0 0 0 2px rgba(251,191,36,0.45)' : '';
+            }
+        }
+
+        function removeSavedName(idx) {
+            const name = state.savedNames[idx];
+            if (name === undefined) return;
+            if (!confirm(`حذف "${name}" من الأسماء المحفوظة؟`)) return;
+            state.savedNames.splice(idx, 1);
+            renderSavedNamePills();
+            saveState();
+        }
+
+        function quickPickName(idx) {
+            const name = state.savedNames[idx];
+            if (!name) return;
+
+            if (activeNameSlot) {
+                const target = document.getElementById(`input-p${activeNameSlot}`);
+                if (target) {
+                    target.value = name;
+                    target.focus();
+                    setNameSlot(activeNameSlot);
+                    return;
+                }
+            }
+
+            for (let i = 1; i <= 4; i++) {
+                const el = document.getElementById(`input-p${i}`);
+                const trimmed = el ? el.value.trim() : '';
+                // Treat empty OR the still-unedited default placeholder ("لاعب 1"...) as free slots
+                const isFree = !trimmed || trimmed === `لاعب ${i}`;
+                if (el && isFree) {
+                    el.value = name;
+                    break;
+                }
+            }
+        }
+
+        function savePlayerNames() {
+            const p1 = document.getElementById('input-p1').value.trim() || 'لاعب 1';
+            const p2 = document.getElementById('input-p2').value.trim() || 'لاعب 2';
+            const p3 = document.getElementById('input-p3').value.trim() || 'لاعب 3';
+            const p4 = document.getElementById('input-p4').value.trim() || 'لاعب 4';
+
+            state.players = [p1, p2, p3, p4];
+            // Anchor round 1's timer here: play time starts once the players are set,
+            // not whenever someone later taps "new round" to record the result.
+            state.lastRoundEndTime = Date.now();
+            state.gameStartedAt = new Date().toISOString();
+            state.currentGameHands = {};
+            // Renaming mid-game must not forget which rounds already reached the stats.
+            if (!state.roundsHistory.length) {
+                state.statsCommittedRounds = 0;
+                state.handsCountedForGame = false;
+            }
+
+            [p1, p2, p3, p4].forEach(n => {
+                if (!state.savedNames.includes(n)) {
+                    state.savedNames.push(n);
+                }
+            });
+
+            saveState();
+            closeModal('modal-player-setup');
+            renderUI();
+        }
+
+        function startNewRoundFlow() {
+            if (state.currentRound >= 9) {
+                showGameOverModal();
+                return;
+            }
+
+            currentRoundDraft = {
+                winnerIdx: 0,
+                endingType: null,
+                loserScores: {},
+                currentStepIdx: 0,
+                selectedCards: [],
+                isDoubled: false,
+                harqActive: false,
+                harqLosers: {},
+                dropCards: {}
+            };
+
+            // Nothing is pre-selected: a highlight left over from the previous round
+            // must never be mistaken for this round's choice, so every button is
+            // reset to its plain, unselected look and the hand type must be tapped again.
+            document.querySelectorAll('.ending-type-btn').forEach(btn => {
+                btn.className = 'ending-type-btn p-2.5 rounded-xl border border-slate-700 bg-slate-900 text-xs font-bold text-slate-300 flex items-center justify-center gap-1.5'
+                    + (btn.id === 'btn-hand-hand_1200' ? ' col-span-2' : '');
+            });
+            const noDropBtn = document.getElementById('btn-no-drop-all');
+            if (noDropBtn) noDropBtn.innerText = '🚫 محد نزل — الكل يأخذ الأساس';
+
+            renderWinnerSelection();
+            openModal('modal-round-step1');
+
+            // Round 9 (the final round) cannot end on a tayara - minimum is a normal hand
+            const tayaraBtn = document.getElementById('btn-hand-tayara');
+            if (tayaraBtn) {
+                if (state.currentRound === 8) {
+                    tayaraBtn.disabled = true;
+                    tayaraBtn.classList.add('opacity-30', 'cursor-not-allowed');
+                } else {
+                    tayaraBtn.disabled = false;
+                    tayaraBtn.classList.remove('opacity-30', 'cursor-not-allowed');
+                }
+            }
+        }
+
+        function renderWinnerSelection() {
+            const grid = document.getElementById('winner-selection-grid');
+            grid.innerHTML = state.players.map((p, idx) => `
+                <button onclick="selectWinner(${idx})" type="button" id="btn-winner-${idx}" class="winner-btn p-3 rounded-2xl border ${
+                    idx === 0 ? 'border-amber-500 bg-amber-500/10 text-amber-300 font-black' : 'border-slate-800 bg-slate-900 text-slate-300 font-bold'
+                } text-xs flex items-center justify-between">
+                    <span class="truncate">${escapeHtml(p)}</span>
+                    <i class="fa-solid fa-check ${idx === 0 ? '' : 'hidden'}"></i>
+                </button>
+            `).join('');
+        }
+
+        function selectWinner(idx) {
+            currentRoundDraft.winnerIdx = idx;
+            document.querySelectorAll('.winner-btn').forEach((btn, i) => {
+                if (i === idx) {
+                    btn.className = 'winner-btn p-3 rounded-2xl border border-amber-500 bg-amber-500/10 text-amber-300 font-black text-xs flex items-center justify-between';
+                    btn.querySelector('.fa-check').classList.remove('hidden');
+                } else {
+                    btn.className = 'winner-btn p-3 rounded-2xl border border-slate-800 bg-slate-900 text-slate-300 font-bold text-xs flex items-center justify-between';
+                    btn.querySelector('.fa-check').classList.add('hidden');
+                }
+            });
+        }
+
+        function selectEndingType(type) {
+            if (type === 'tayara' && state.currentRound === 8) return; // round 9 can't end on a tayara
+            currentRoundDraft.endingType = type;
+            document.querySelectorAll('.ending-type-btn').forEach(btn => {
+                btn.className = 'ending-type-btn p-2.5 rounded-xl border border-slate-700 bg-slate-900 text-xs font-bold text-slate-300 flex items-center justify-center gap-1.5'
+                    + (btn.id === 'btn-hand-hand_1200' ? ' col-span-2' : '');
+            });
+            const activeBtn = document.getElementById(`btn-hand-${type}`);
+            if (activeBtn) {
+                activeBtn.className = 'ending-type-btn p-2.5 rounded-xl border border-amber-500/50 bg-amber-500/10 text-xs font-bold text-amber-300 flex items-center justify-center gap-1.5'
+                    + (type === 'hand_1200' ? ' col-span-2' : '');
+            }
+            const noDropBtn = document.getElementById('btn-no-drop-all');
+            if (noDropBtn) noDropBtn.innerText = `🚫 محد نزل — الكل ${getNoDropBase()}`;
+        }
+
+        // Most rounds end with nobody dropping cards: every loser simply takes the
+        // base amount of the chosen hand, so skip the three step-2 screens.
+        function finishRoundNoDrop() {
+            if (!currentRoundDraft.endingType) {
+                alert('اختر نوع الهاند أولاً');
+                return;
+            }
+            closeModal('modal-round-step1');
+            getLoserIndices().forEach(idx => {
+                currentRoundDraft.loserScores[idx] = getNoDropBase();
+                currentRoundDraft.harqLosers[idx] = false;
+            });
+            finishRoundCalculations();
+        }
+
+        function proceedToOtherPlayers() {
+            if (!currentRoundDraft.endingType) {
+                alert('اختر نوع الهاند أولاً قبل المتابعة');
+                return;
+            }
+            closeModal('modal-round-step1');
+            currentRoundDraft.currentStepIdx = 0;
+
+            // The final round (9th) uses the same per-loser screen as every other
+            // round, so a حارق or dropped cards can be recorded there too.
+            setupStep2PlayerScreen();
+            openModal('modal-round-step2');
+        }
+
+        function getLoserIndices() {
+            return [0, 1, 2, 3].filter(i => i !== currentRoundDraft.winnerIdx);
+        }
+
+        const NO_DROP_BASE_MAP = {
+            'tayara': 100,
+            'hand_normal': 200,
+            'hand_400': 400,
+            'hand_800': 800,
+            'hand_1200': 1200
+        };
+
+        function getNoDropBase() {
+            return NO_DROP_BASE_MAP[currentRoundDraft.endingType] || 200;
+        }
+
+        const CARD_MULTIPLIER_MAP = {
+            'tayara': 1,
+            'hand_normal': 2,
+            'hand_400': 4,
+            'hand_800': 8,
+            'hand_1200': 12
+        };
+
+        function getCardMultiplier() {
+            return CARD_MULTIPLIER_MAP[currentRoundDraft.endingType] || 1;
+        }
+
+        function setupStep2PlayerScreen() {
+            const losers = getLoserIndices();
+            const playerIdx = losers[currentRoundDraft.currentStepIdx];
+            const playerName = state.players[playerIdx];
+
+            document.getElementById('step2-player-title').innerText = `أوراق: ${playerName}`;
+            document.getElementById('step2-player-step').innerText = `${currentRoundDraft.currentStepIdx + 1} / 3`;
+            document.getElementById('step2-penalty-hint').innerText = `عدم التنزيل = ${getNoDropBase()} نقطة`;
+            document.getElementById('btn-multiplier-toggle').innerText = `×${getCardMultiplier()}`;
+
+            currentRoundDraft.selectedCards = [];
+            currentRoundDraft.harqActive = false;
+            updateStep2CardsUI();
+
+            const padGrid = document.getElementById('cards-pad-grid');
+            padGrid.innerHTML = DEFAULT_CARDS.map(c => `
+                <button onclick="addCard(${c.val}, '${c.label}')" type="button" class="relative bg-white border border-slate-300 rounded-lg aspect-[2/3] flex flex-col items-center justify-center gap-1 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition active:scale-95 px-1 pb-2">
+                    <span class="card-rank font-black ${c.color}">${c.rank}</span>
+                    ${c.suit ? `<span class="card-suit ${c.color}">${c.suit}</span>` : ''}
+                    ${String(c.val) === c.rank ? '' : `<span class="card-val absolute bottom-1 font-black text-slate-500" dir="ltr">${c.val}</span>`}
+                </button>
+            `).join('');
+        }
+
+        function addCard(val, label) {
+            if (currentRoundDraft.harqActive) return; // حارق replaces card counting for this player
+            currentRoundDraft.selectedCards.push({ val, label });
+            updateStep2CardsUI();
+        }
+
+        function clearCards() {
+            currentRoundDraft.selectedCards = [];
+            updateStep2CardsUI();
+        }
+
+        // حارق: a losing player caught without dropping anything useful - adds 200
+        // straight on top of whatever this round's hand type is already worth.
+        function toggleHarq() {
+            currentRoundDraft.harqActive = !currentRoundDraft.harqActive;
+            if (currentRoundDraft.harqActive) {
+                currentRoundDraft.selectedCards = [];
+            }
+            updateStep2CardsUI();
+        }
+
+        function updateStep2CardsUI() {
+            const harqBtn = document.getElementById('btn-harq-toggle');
+            if (harqBtn) {
+                harqBtn.className = currentRoundDraft.harqActive
+                    ? 'text-[10px] font-black px-2 py-1 rounded-lg border border-orange-500 text-orange-100 bg-orange-500/40'
+                    : 'text-[10px] font-bold px-2 py-1 rounded-lg border border-orange-500/40 text-orange-300 bg-orange-500/10';
+            }
+
+            const container = document.getElementById('selected-cards-chips');
+            if (currentRoundDraft.harqActive) {
+                const total = getNoDropBase() + 200;
+                container.innerHTML = `<span class="text-xs text-orange-300 font-bold">🔥 حارق مفعّل: ${getNoDropBase()} + 200</span>`;
+                document.getElementById('current-cards-sum').innerText = `${total} نقطة`;
+                return;
+            }
+            if (currentRoundDraft.selectedCards.length === 0) {
+                const base = getNoDropBase();
+                container.innerHTML = '<span class="text-xs text-slate-500 italic">لم تُحدد أوراق (سيُحسب عدم النزول تلقائياً)...</span>';
+                document.getElementById('current-cards-sum').innerText = `${base} نقطة`;
+            } else {
+                container.innerHTML = currentRoundDraft.selectedCards.map((c, i) => `
+                    <span class="bg-slate-800 text-amber-300 border border-slate-700 text-[10px] font-bold px-2 py-1 rounded-lg flex items-center gap-1">
+                        ${c.label}
+                        <i onclick="removeCard(${i})" class="fa-solid fa-xmark text-[10px] cursor-pointer text-rose-400"></i>
+                    </span>
+                `).join('');
+
+                let sum = currentRoundDraft.selectedCards.reduce((acc, curr) => acc + curr.val, 0);
+                sum *= getCardMultiplier();
+                document.getElementById('current-cards-sum').innerText = `${sum} نقطة`;
+            }
+        }
+
+        function removeCard(idx) {
+            currentRoundDraft.selectedCards.splice(idx, 1);
+            updateStep2CardsUI();
+        }
+
+        function nextPlayerStep() {
+            const losers = getLoserIndices();
+            const playerIdx = losers[currentRoundDraft.currentStepIdx];
+
+            let finalScore = 0;
+            if (currentRoundDraft.harqActive) {
+                finalScore = getNoDropBase() + 200;
+            } else if (currentRoundDraft.selectedCards.length === 0) {
+                finalScore = getNoDropBase();
+            } else {
+                finalScore = currentRoundDraft.selectedCards.reduce((acc, curr) => acc + curr.val, 0);
+                finalScore *= getCardMultiplier();
+            }
+
+            currentRoundDraft.loserScores[playerIdx] = finalScore;
+            currentRoundDraft.harqLosers[playerIdx] = currentRoundDraft.harqActive;
+            currentRoundDraft.dropCards[playerIdx] = currentRoundDraft.harqActive
+                ? 0
+                : currentRoundDraft.selectedCards.length;
+
+            if (currentRoundDraft.currentStepIdx < 2) {
+                currentRoundDraft.currentStepIdx++;
+                setupStep2PlayerScreen();
+            } else {
+                finishRoundCalculations();
+            }
+        }
+
+        function previousPlayerStep() {
+            if (currentRoundDraft.currentStepIdx > 0) {
+                currentRoundDraft.currentStepIdx--;
+                setupStep2PlayerScreen();
+            }
+        }
+
+        function bumpHandCount(map, name, type, amount = 1) {
+            if (!map[name]) map[name] = {};
+            map[name][type] = (map[name][type] || 0) + amount;
+        }
+
+        // Hands per player are derived from the rounds themselves, so a deleted round
+        // disappears together with its hand instead of lingering in the game tally.
+        function computeGameHands(rounds) {
+            const hands = {};
+            (rounds || []).forEach(rd => {
+                if (rd.winner && rd.endingType) bumpHandCount(hands, rd.winner, rd.endingType);
+                (rd.harqLosers || []).forEach(name => {
+                    if (name) bumpHandCount(hands, name, 'harq');
+                });
+            });
+            return hands;
+        }
+
+        // Rounds saved before harqLosers existed cannot be rebuilt without losing their
+        // حارق counts, so an already-running legacy game keeps its saved tally.
+        function syncGameHandsFromHistory() {
+            if ((state.roundsHistory || []).some(rd => !Array.isArray(rd.harqLosers))) return;
+            state.currentGameHands = computeGameHands(state.roundsHistory);
+        }
+
+        function finishRoundCalculations() {
+            closeModal('modal-round-step2');
+
+            const winnerBonusMap = {
+                'tayara': -30,
+                'hand_normal': -60,
+                'hand_400': -120,
+                'hand_800': -240,
+                'hand_1200': -360
+            };
+
+            const winnerBonus = winnerBonusMap[currentRoundDraft.endingType] || -60;
+
+            const roundScores = [0, 0, 0, 0];
+            roundScores[currentRoundDraft.winnerIdx] = winnerBonus;
+
+            getLoserIndices().forEach(lIdx => {
+                roundScores[lIdx] = currentRoundDraft.loserScores[lIdx] || getNoDropBase();
+            });
+
+            state.currentRound++;
+            // This round's time runs from when the previous round was calculated
+            // (or from choosing the players, for round 1) to right now.
+            const roundEndTime = Date.now();
+            const previousRound = state.roundsHistory[state.roundsHistory.length - 1];
+            const roundStartTime = (previousRound && previousRound.endedAt)
+                || state.lastRoundEndTime
+                || Date.parse(state.gameStartedAt || '')
+                || roundEndTime;
+            const harqLosers = getLoserIndices()
+                .filter(lIdx => currentRoundDraft.harqLosers && currentRoundDraft.harqLosers[lIdx])
+                .map(lIdx => state.players[lIdx]);
+            const drops = {};
+            Object.entries(currentRoundDraft.dropCards || {}).forEach(([lIdx, cards]) => {
+                if (cards > 0) drops[state.players[lIdx]] = cards;
+            });
+            state.roundsHistory.push({
+                winner: state.players[currentRoundDraft.winnerIdx],
+                endingType: currentRoundDraft.endingType,
+                harqLosers,
+                drops,
+                scores: roundScores,
+                endedAt: roundEndTime,
+                durationMs: roundEndTime - roundStartTime
+            });
+            state.lastRoundEndTime = roundEndTime;
+
+            // Stats are not committed per round: a wrong tap (حارق, hand type) or a
+            // deleted round must never leak into the all-time totals. The tally is
+            // rebuilt from the rounds, so it always matches what is still on screen.
+            syncGameHandsFromHistory();
+
+            // The group's recorded sounds: one after round 7 (two rounds left) and a
+            // different one after round 8 (last round).
+            if (state.currentRound === 7) playRoundSound('round7');
+            if (state.currentRound === 8) playRoundSound('round8');
+
+            saveState();
+            renderUI();
+
+            if (state.currentRound >= 9) {
+                showGameOverModal();
+            }
+        }
+
+        function deleteRound(idx) {
+            if (state.currentRound >= 9) {
+                alert('الجولات انتهت واحتُسبت الإحصائيات. اضغط "قيم جديد" لبدء جلسة جديدة.');
+                return;
+            }
+            state.roundsHistory.splice(idx, 1);
+            // Keep the counter aligned with positions: removing a round that was already
+            // counted (games started before commit-at-game-end) shifts the pending ones left.
+            if (idx < (state.statsCommittedRounds || 0)) {
+                state.statsCommittedRounds -= 1;
+            }
+            state.currentRound = state.roundsHistory.length;
+            syncGameHandsFromHistory();
+            saveState();
+            renderUI();
+        }
+
+        // One commit per finished game: all-time stats only change here, so trials,
+        // wrong taps and deleted rounds during play leave no trace.
+        function commitGameStats() {
+            const rounds = state.roundsHistory || [];
+            if (!state.stats) state.stats = { gamesPlayed: 0, playerWins: {}, handCounts: {}, playerHandCounts: {}, playerDropCounts: {}, playerDropCards: {}, harqCount: 0 };
+            if (!state.stats.playerWins) state.stats.playerWins = {};
+            if (!state.stats.handCounts) state.stats.handCounts = {};
+            if (!state.stats.playerHandCounts) state.stats.playerHandCounts = {};
+            if (!state.stats.playerDropCounts) state.stats.playerDropCounts = {};
+            if (!state.stats.playerDropCards) state.stats.playerDropCards = {};
+
+            // Commit only what was not counted yet, so reopening the winner screen or
+            // finishing a game that started before this change counts nothing twice.
+            const pending = rounds.slice(state.statsCommittedRounds || 0);
+            if (!pending.length && state.handsCountedForGame) return;
+
+            // One finished قيم is one game, however many rounds it contained.
+            if (pending.length) state.stats.gamesPlayed = (state.stats.gamesPlayed || 0) + 1;
+            pending.forEach(rd => {
+                if (rd.winner) {
+                    state.stats.playerWins[rd.winner] = (state.stats.playerWins[rd.winner] || 0) + 1;
+                }
+                if (rd.endingType) {
+                    state.stats.handCounts[rd.endingType] = (state.stats.handCounts[rd.endingType] || 0) + 1;
+                }
+                Object.entries(rd.drops || {}).forEach(([name, cards]) => {
+                    state.stats.playerDropCounts[name] = (state.stats.playerDropCounts[name] || 0) + 1;
+                    state.stats.playerDropCards[name] = (state.stats.playerDropCards[name] || 0) + cards;
+                });
+            });
+
+            if (!state.handsCountedForGame) {
+                let harqTotal = 0;
+                for (const [name, counts] of Object.entries(state.currentGameHands || {})) {
+                    for (const [type, count] of Object.entries(counts || {})) {
+                        if (!count) continue;
+                        bumpHandCount(state.stats.playerHandCounts, name, type, count);
+                        if (type === 'harq') harqTotal += count;
+                    }
+                }
+                state.stats.harqCount = (state.stats.harqCount || 0) + harqTotal;
+                state.handsCountedForGame = true;
+            }
+            state.statsCommittedRounds = rounds.length;
+        }
+
+        function showGameOverModal() {
+            const totals = calculateTotals();
+            const indexedTotals = state.players.map((name, idx) => ({ name, score: totals[idx] }));
+
+            // Sort ascending (Lowest score is 1st place)
+            indexedTotals.sort((a, b) => a.score - b.score);
+
+            document.getElementById('winner-1st-name').innerText = indexedTotals[0].name;
+            document.getElementById('winner-1st-score').innerText = `${indexedTotals[0].score} ن`;
+
+            document.getElementById('winner-2nd-name').innerText = indexedTotals[1].name;
+            document.getElementById('winner-2nd-score').innerText = `${indexedTotals[1].score} ن`;
+            document.getElementById('winner-2nd-gap').innerText =
+                `‎+${indexedTotals[1].score - indexedTotals[0].score} عن الأول`;
+
+            document.getElementById('winner-3rd-name').innerText = indexedTotals[2].name;
+            document.getElementById('winner-3rd-score').innerText = `${indexedTotals[2].score} ن`;
+            document.getElementById('winner-3rd-gap').innerText =
+                `‎+${indexedTotals[2].score - indexedTotals[0].score} عن الأول · ‎+${indexedTotals[2].score - indexedTotals[1].score} عن الثاني`;
+
+            document.getElementById('winner-last-name').innerText = indexedTotals[3].name;
+            document.getElementById('winner-last-score').innerText = `${indexedTotals[3].score} ن`;
+            document.getElementById('winner-last-gap').innerText =
+                `‎+${indexedTotals[3].score - indexedTotals[0].score} عن الأول · ‎+${indexedTotals[3].score - indexedTotals[1].score} عن الثاني · ‎+${indexedTotals[3].score - indexedTotals[2].score} عن الثالث`;
+
+            // Total time played across all 9 rounds
+            const totalDurationMs = state.roundsHistory.reduce((acc, rd) => acc + (rd.durationMs || 0), 0);
+            document.getElementById('game-total-duration').innerText = `⏱ مدة اللعب الكاملة: ${formatDurationLong(totalDurationMs)}`;
+
+            // Save this finished day into the days-history log, together with the
+            // hand breakdown per player and the exact start/end timestamps so a
+            // night that runs past midnight can still be reported as one session.
+            const endedAt = new Date().toISOString();
+            const lastRound = state.roundsHistory[state.roundsHistory.length - 1];
+            // A game is identified by its last round's timestamp, so finishing the
+            // exact same score sheet a second time is still a second game.
+            const gameKey = lastRound && lastRound.endedAt ? String(lastRound.endedAt) : '';
+            const previous = state.daysHistory[0];
+            const sameScores = previous
+                && previous.winner === indexedTotals[0].name
+                && JSON.stringify(previous.players) === JSON.stringify(indexedTotals);
+            const alreadySaved = !previous
+                ? false
+                // Entries saved before the key existed have no gameKey: fall back to
+                // comparing the score sheet, which is how they were matched before.
+                : (gameKey && previous.gameKey)
+                    ? previous.gameKey === gameKey
+                    : sameScores;
+            if (!alreadySaved) {
+                commitGameStats();
+                state.daysHistory.unshift({
+                    date: new Date().toLocaleDateString('ar-SA'),
+                    dateIso: endedAt.slice(0, 10),
+                    gameKey: gameKey || null,
+                    winner: indexedTotals[0].name,
+                    players: indexedTotals,
+                    hands: state.currentGameHands || {},
+                    startedAt: state.gameStartedAt || null,
+                    endedAt
+                });
+                state.currentGameHands = {};
+                state.gameStartedAt = null;
+                saveState();
+            }
+
+            openModal('modal-game-over');
+        }
+
+        function openStatsModal() {
+            renderStatsUI();
+            openModal('modal-stats');
+        }
+
+        function switchStatsTab(tab) {
+            const tabOverall = document.getElementById('stats-tab-overall');
+            const tabHistory = document.getElementById('stats-tab-history');
+            const btnOverall = document.getElementById('tab-btn-overall');
+            const btnHistory = document.getElementById('tab-btn-history');
+
+            if (tab === 'overall') {
+                tabOverall.classList.remove('hidden');
+                tabHistory.classList.add('hidden');
+                btnOverall.className = 'flex-1 py-2 rounded-lg font-bold bg-indigo-600 text-white transition';
+                btnHistory.className = 'flex-1 py-2 rounded-lg font-bold text-slate-400 transition';
+            } else {
+                tabOverall.classList.add('hidden');
+                tabHistory.classList.remove('hidden');
+                btnOverall.className = 'flex-1 py-2 rounded-lg font-bold text-slate-400 transition';
+                btnHistory.className = 'flex-1 py-2 rounded-lg font-bold bg-indigo-600 text-white transition';
+            }
+            renderStatsUI();
+        }
+
+        const HAND_META = {
+            tayara: { short: '✈️', cls: 'hand-tayara' },
+            hand_normal: { short: '🎴200', cls: 'hand-normal' },
+            hand_400: { short: '🔥400', cls: 'hand-400' },
+            hand_800: { short: '⚡800', cls: 'hand-800' },
+            hand_1200: { short: '💥1200', cls: 'hand-1200' },
+            harq: { short: '🔥حارق', cls: 'hand-harq' }
+        };
+
+        function handChipsHtml(hands) {
+            if (!hands) return '';
+            return Object.entries(hands).map(([name, counts]) => {
+                const chips = Object.entries(counts || {})
+                    .filter(([, c]) => c > 0)
+                    .map(([type, c]) => {
+                        const meta = HAND_META[type] || { short: type, cls: 'hand-normal' };
+                        return `<span class="hand-chip ${meta.cls}">${meta.short} ${c}</span>`;
+                    }).join('');
+                if (!chips) return '';
+                return `<div class="flex items-center justify-between gap-2"><span class="font-bold text-slate-300">${escapeHtml(name)}</span><span class="flex flex-wrap gap-1">${chips}</span></div>`;
+            }).filter(Boolean).join('');
+        }
+
+        function openSessionReport() {
+            if (!state.email) {
+                alert('سجل الدخول أولاً عشان يطلع تقرير الليلة');
+                return;
+            }
+            if (!state.pin) {
+                alert('افتح الحساب بالرقم السري أولاً');
+                return;
+            }
+            window.open(`/api/report?email=${encodeURIComponent(state.email)}&pin=${encodeURIComponent(state.pin)}&format=text`, '_blank');
+        }
+
+        const PUBLIC_URL = 'https://hindcalc.vercel.app/';
+
+        // Copies the page link so it can be pasted to someone (WhatsApp, etc.).
+        function pageLink() {
+            const isPublicHost = location.protocol === 'https:'
+                && !['localhost', '127.0.0.1'].includes(location.hostname);
+            return isPublicHost ? location.origin + location.pathname : PUBLIC_URL;
+        }
+
+        function copyPageLink() {
+            const url = pageLink();
+
+            const done = () => {
+                const btn = document.getElementById('btn-share-link');
+                if (!btn) return;
+                const original = btn.innerHTML;
+                btn.innerHTML = '<i class="fa-solid fa-check text-xs text-emerald-300"></i>';
+                btn.title = 'تم نسخ الرابط';
+                setTimeout(() => {
+                    btn.innerHTML = original;
+                    btn.title = 'نسخ رابط الصفحة';
+                }, 1600);
+            };
+
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(url).then(done).catch(() => {
+                    if (legacyCopy(url)) done();
+                });
+                return;
+            }
+            if (legacyCopy(url)) done();
+        }
+
+        // Clipboard API needs https; this keeps the button working on plain http/file previews.
+        function legacyCopy(text) {
+            const area = document.createElement('textarea');
+            area.value = text;
+            area.style.position = 'fixed';
+            area.style.opacity = '0';
+            document.body.appendChild(area);
+            area.select();
+            let ok = false;
+            try {
+                ok = document.execCommand('copy');
+            } catch (e) {
+                ok = false;
+            }
+            area.remove();
+            return ok;
+        }
+
+        function exportStatsJson() {
+            const payload = {
+                email: state.email,
+                exportedAt: new Date().toISOString(),
+                players: state.players,
+                stats: state.stats,
+                daysHistory: state.daysHistory
+            };
+            const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `hind-stats-${new Date().toISOString().slice(0, 10)}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function renderStatsUI() {
+            // Render Champions Leaderboard
+            const champContainer = document.getElementById('champions-leaderboard');
+            const wins = state.stats.playerWins || {};
+            const sortedPlayers = Object.keys(wins).sort((a, b) => wins[b] - wins[a]);
+
+            if (sortedPlayers.length === 0) {
+                champContainer.innerHTML = '<span class="text-slate-500 italic">لا توجد إحصائيات سابقة بعد...</span>';
+            } else {
+                champContainer.innerHTML = sortedPlayers.map(p => `
+                    <div class="flex items-center justify-between bg-slate-950/60 p-2 rounded-xl border border-slate-800/80">
+                        <span class="font-bold text-slate-200">${escapeHtml(p)}</span>
+                        <span class="font-black text-amber-400">${wins[p]} انتصارات</span>
+                    </div>
+                `).join('');
+            }
+
+            // Render Hand Types
+            const handContainer = document.getElementById('hand-types-stats');
+            const hands = state.stats.handCounts || {};
+            const handLabels = {
+                'tayara': '✈️ طايرة',
+                'hand_normal': '🎴 هاند 200',
+                'hand_400': '🔥 هاند 400',
+                'hand_800': '⚡ هاند 800',
+                'hand_1200': '💥 هاند 1200'
+            };
+
+            handContainer.innerHTML = Object.keys(handLabels).map(key => `
+                <div class="flex items-center justify-between bg-slate-950/60 p-2 rounded-xl border border-slate-800/80">
+                    <span class="font-bold text-slate-300">${handLabels[key]}</span>
+                    <span class="font-bold text-indigo-300">${hands[key] || 0} مرة</span>
+                </div>
+            `).join('');
+
+            // Render Per-Player Hand Breakdown Table (who did a hand / tayara / حارق and how many times)
+            const pht = state.stats.playerHandCounts || {};
+            const pdCounts = state.stats.playerDropCounts || {};
+            const pdCards = state.stats.playerDropCards || {};
+            const handKeysForTable = ['tayara', 'hand_normal', 'hand_400', 'hand_800', 'hand_1200', 'harq'];
+            const handShortLabels = { tayara: '✈️', hand_normal: '🎴200', hand_400: '🔥400', hand_800: '⚡800', hand_1200: '💥1200', harq: '🔥حارق' };
+            const handFullLabels = Object.assign({}, handLabels, { harq: '🔥 حارق' });
+
+            const tableHeader = document.getElementById('player-hand-table-header');
+            if (tableHeader) {
+                tableHeader.innerHTML = `<th class="py-1.5 px-0.5 text-right">اللاعب</th>` +
+                    handKeysForTable.map(k => `<th class="py-1.5 px-0.5">${handShortLabels[k]}</th>`).join('') +
+                    `<th class="py-1.5 px-0.5">النزول</th>`;
+            }
+
+            const tableBody = document.getElementById('player-hand-table-body');
+            if (tableBody) {
+                // The current four come first, then anyone else who already has
+                // all-time numbers, so switching the lineup never hides a player.
+                const playersWithData = state.players.slice();
+                const extras = new Set();
+                [pht, pdCounts, pdCards, wins].forEach(source => {
+                    Object.keys(source || {}).forEach(name => {
+                        if (name && !playersWithData.includes(name)) extras.add(name);
+                    });
+                });
+                const activity = (name) => handKeysForTable.reduce((sum, k) => sum + ((pht[name] && pht[name][k]) || 0), 0)
+                    + (pdCounts[name] || 0) + (wins[name] || 0);
+                playersWithData.push(...[...extras].sort((a, b) => activity(b) - activity(a) || a.localeCompare(b, 'ar')));
+
+                tableBody.innerHTML = playersWithData.map(name => {
+                    const counts = pht[name] || {};
+                    const dropped = pdCounts[name] || 0;
+                    return `<tr>
+                        <td class="py-1.5 px-0.5 font-bold text-slate-200 text-right truncate max-w-[64px]">${escapeHtml(name)}</td>
+                        ${handKeysForTable.map(k => `<td class="py-1.5 px-0.5 font-bold ${counts[k] ? 'text-amber-300' : 'text-slate-600'}">${counts[k] || 0}</td>`).join('')}
+                        <td class="py-1.5 px-0.5">
+                            <div class="font-bold ${dropped ? 'text-amber-300' : 'text-slate-600'}">${dropped}</div>
+                            <div class="text-[9px] font-bold ${dropped ? 'text-slate-400' : 'text-slate-600'}">${pdCards[name] || 0} ورقة</div>
+                        </td>
+                    </tr>`;
+                }).join('');
+            }
+
+            // Render Champion Per Hand Type (top 3 players for each hand/tayara/حارق)
+            const champsContainer = document.getElementById('hand-champions');
+            if (champsContainer) {
+                const rows = handKeysForTable.map(k => {
+                    const ranked = Object.keys(pht)
+                        .map(name => ({ name, count: (pht[name] && pht[name][k]) || 0 }))
+                        .filter(row => row.count > 0)
+                        .sort((a, b) => b.count - a.count);
+                    if (!ranked.length) return '';
+                    const top = ranked.slice(0, 3);
+                    return `<div class="bg-slate-950/60 p-2 rounded-xl border border-slate-800/80 space-y-1">
+                        <div class="flex items-center justify-between gap-2">
+                            <span class="font-bold text-slate-300">${handFullLabels[k] || k}</span>
+                            ${ranked.length > 3 ? '<span class="text-[9px] text-slate-500 font-bold shrink-0">أفضل 3</span>' : ''}
+                        </div>
+                        ${top.map((row, i) => `
+                            <div class="flex items-center justify-between gap-2 bg-white/5 rounded-lg px-2 py-1">
+                                <span class="font-bold text-slate-200 truncate">${i + 1}. ${escapeHtml(row.name)}</span>
+                                <span class="font-black text-amber-400 shrink-0">${row.count}</span>
+                            </div>`).join('')}
+                    </div>`;
+                }).filter(Boolean).join('');
+                champsContainer.innerHTML = rows || '<span class="text-slate-500 italic">لا توجد بيانات كافية بعد...</span>';
+            }
+
+            // Render Days History List
+            const historyContainer = document.getElementById('history-list-container');
+            if (state.daysHistory.length === 0) {
+                historyContainer.innerHTML = '<span class="text-slate-500 italic block text-center py-4">لا يوجد سجل ألعاب سابقة محفوظ.</span>';
+            } else {
+                historyContainer.innerHTML = state.daysHistory.map(day => {
+                    const last = day.players[day.players.length - 1];
+                    return `
+                    <div class="stat-card space-y-1 !p-2.5">
+                        <div class="flex justify-between text-[10px] text-slate-400 font-bold border-b border-slate-800 pb-1">
+                            <span>📅 ${escapeHtml(day.date)}</span>
+                            <span class="text-amber-400">البطل: ${escapeHtml(day.winner)}</span>
+                        </div>
+                        <div class="flex flex-wrap justify-between gap-x-3 gap-y-1 text-xs pt-0.5">
+                            ${day.players.map(p => `<span class="text-slate-300 font-bold">${escapeHtml(p.name)}: <span dir="ltr">${p.score}</span></span>`).join('')}
+                        </div>
+                        <div class="text-[10px] text-rose-300 font-bold">💩 الأخير: ${escapeHtml(last ? last.name : '-')} — <span dir="ltr">${last ? last.score : '-'}</span></div>
+                        ${day.hands && Object.keys(day.hands).length ? `<div class="pt-1.5 mt-1 border-t border-slate-800/70 space-y-1">${handChipsHtml(day.hands)}</div>` : ''}
+                    </div>
+                `; }).join('');
+            }
+
+            const restoreBtn = document.getElementById('btn-restore-backup');
+            if (restoreBtn) restoreBtn.classList.toggle('hidden', !safeParse('hind_stats_backup', null));
+        }
+
+        function confirmStatsWipe() {
+            const input = document.getElementById('stats-wipe-pin');
+            const error = document.getElementById('stats-wipe-error');
+            if (input) input.value = '';
+            if (error) error.classList.add('hidden');
+            openModal('modal-confirm-stats-wipe');
+        }
+
+        function resetStatsHistory() {
+            // The PIN is re-checked here on purpose: being logged in is not enough
+            // to wipe the history.
+            const input = document.getElementById('stats-wipe-pin');
+            const error = document.getElementById('stats-wipe-error');
+            const entered = (input ? input.value : '').trim();
+            if (!/^\d{4}$/.test(entered) || entered !== state.pin) {
+                if (error) error.classList.remove('hidden');
+                if (input) { input.value = ''; input.focus(); }
+                return;
+            }
+            closeModal('modal-confirm-stats-wipe');
+            // Keep one snapshot on this device so an accidental wipe can be undone.
+            const hasHistory = (state.stats.gamesPlayed || 0) > 0 || (state.daysHistory || []).length > 0;
+            if (hasHistory) {
+                localStorage.setItem('hind_stats_backup', JSON.stringify({
+                    savedAt: new Date().toISOString(),
+                    stats: state.stats,
+                    daysHistory: state.daysHistory
+                }));
+            }
+            state.stats = EMPTY_STATS();
+            state.daysHistory = [];
+            // A wiped history starts from zero: the game in progress counts in full when it ends.
+            state.statsCommittedRounds = 0;
+            state.handsCountedForGame = false;
+            saveState();
+            renderStatsUI();
+        }
+
+        function restoreStatsBackup() {
+            const backup = safeParse('hind_stats_backup', null);
+            if (!backup || !backup.stats) return;
+            if (!confirm('استعادة السجل الممسوح؟ سيستبدل الإحصائيات الحالية.')) return;
+            state.stats = backup.stats;
+            state.daysHistory = backup.daysHistory || [];
+            localStorage.removeItem('hind_stats_backup');
+            saveState();
+            renderStatsUI();
+        }
+
+        function openModal(id) {
+            const modal = document.getElementById(id);
+            if (modal) modal.classList.remove('hidden');
+        }
+
+        function closeModal(id) {
+            const modal = document.getElementById(id);
+            if (modal) modal.classList.add('hidden');
+        }
+    </script>
+</body>
+</html>
