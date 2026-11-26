@@ -4,6 +4,10 @@
   <p>حاسبة نقاط عربية للعبة الهند — نسخة ويب + نسخة أوفلاين بملف واحد</p>
 </div>
 
+[![live](https://img.shields.io/badge/live-hindcalc.vercel.app-2ea44f?style=flat-square)](https://hindcalc.vercel.app/)
+[![offline](https://img.shields.io/badge/offline-single%20file-blue?style=flat-square)](offline/dist/index.html)
+[![license](https://img.shields.io/github/license/essa808/hindcalc?style=flat-square)](LICENSE)
+
 ![لقطة من التطبيق](docs/screenshot-desktop.png)
 
 ## المزايا
